@@ -88,10 +88,10 @@ app.post('/login', (req, res)=> {
 
         console.log(result)
         if (result.rowCount > 0) {
-            res.send('Login success!')
+            res.send([true, 'Login success!'])
         }
         else{ 
-            res.send('Wrong username or password.')
+            res.send([false, 'Wrong username or password.'])
             console.log('Wrong username or password.')
         }
     })
