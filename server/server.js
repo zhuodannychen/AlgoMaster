@@ -1,7 +1,7 @@
 const express = require('express'); //Line 1
 const cors = require('cors')
 const bodyParser = require('body-parser');
-
+const { Client } = require('pg')
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
@@ -12,7 +12,7 @@ const app = express();
 app.use(cors())
 app.use(bodyParser.json());
 
-const { Client } = require('pg')
+
 const client = new Client({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -20,12 +20,6 @@ const client = new Client({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE
 })
-
-// ADD .ENV
-
-const port = process.env.PORT || 3001; //Line 3
-// This displays message that the server running and listening to specified port
-app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6
 
 client.connect()
 
@@ -97,3 +91,7 @@ app.post('/login', (req, res)=> {
     })
     client.end;
 })
+
+const port = process.env.PORT || 3001; //Line 3
+// This displays message that the server running and listening to specified port
+app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6
