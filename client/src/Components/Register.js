@@ -18,8 +18,12 @@ function Register() {
         username: usernameReg,
         password: passwordReg,
     }).then((response) => {
-        setRegStatus(response.data)
-        console.log(response)
+        setRegStatus(response.data[0])
+        console.log(response.data[1])
+
+        if (response.data[0]){
+          navigate("home");
+        }
     })
   }
 
