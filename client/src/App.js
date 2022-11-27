@@ -1,6 +1,6 @@
 import Login from './Components/Login'
 import Register from './Components/Register'
-import Home from './Components/Home'
+import Contests from "./Components/Contests"
 import Profile from './Components/Profile'
 import './App.css'
 import ProtectedRoute from './Components/ProtectedRoute'
@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="profile" element={<Profile />} />
+        <Route path="contests" element={<Contests />} />
         {/* <Route path="*" element={<NoPage />} /> */}
       </Routes>
     </BrowserRouter>

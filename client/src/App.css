@@ -96,3 +96,19 @@ code {
   align-items: center;
   min-height: 100vh;
 }
+
+.contest_info {
+  margin-right: 10px !important;
+  font-size: 12px;
+}
+
+.contest-name {
+  margin-top: 5px !important;
+  font-weight: bold;
+}
+
+#seats_left {
+  margin-right: 5px;
+  font-weight: 600;
+  font-size: 13px;
+}

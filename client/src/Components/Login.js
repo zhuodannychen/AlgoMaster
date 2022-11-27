@@ -30,7 +30,7 @@ function Login() {
         if (response.data[0]) {
             // loggedInUser = true
             localStorage.setItem("authenticated", JSON.stringify(true));
-            navigate("/profile");
+            navigate("/home");
         }
     })
   }
