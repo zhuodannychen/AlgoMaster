@@ -17,6 +17,7 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="contests" element={<Contests />} />
         <Route path="create" element={ <CreateContest /> } />
+        <Route path="profile" element={<Profile />} />
         {/* <Route path="*" element={<NoPage />} /> */}
       </Routes>
     </BrowserRouter>

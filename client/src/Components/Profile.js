@@ -13,13 +13,13 @@ function Profile() {
         if (loggedInUser) {
             setauthenticated(loggedInUser);
         } else {
-            navigate("/login");
+            navigate("/");
         }
     }, []);
 
     const logout = () => {
         localStorage.setItem("authenticated", JSON.stringify(false));
-        navigate("/login");
+        navigate("/");
     }
 
 
