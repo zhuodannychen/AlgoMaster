@@ -7,11 +7,9 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
-
 const app = express(); 
 app.use(cors())
 app.use(bodyParser.json());
-
 
 const client = new Client({
   host: process.env.DB_HOST,
@@ -48,10 +46,10 @@ app.post('/users', (req, res)=> {
 
     client.query(insertQuery, (err, result)=>{
         if(!err){
-            res.send('User registered successfully!')
+            res.send([true, 'User registered successfully!'])
         }
         else{ 
-            res.send(err.message)
+            res.send([false, err.message])
             console.log(err.message)
         }
     })
