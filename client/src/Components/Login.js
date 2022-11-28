@@ -21,16 +21,17 @@ function Login() {
   }, []);
 
   const login = () => {
+    console.log(usernameLog, passwordLog)
     Axios.post("http://localhost:3001/login", {
         username: usernameLog,
         password: passwordLog,
     }).then((response) => {
+        console.log(response)
         setLogStatus(response.data[1])
-        // console.log(response)
         if (response.data[0]) {
             // loggedInUser = true
             localStorage.setItem("authenticated", JSON.stringify(true));
-            navigate("/home");
+            navigate("/profile");
         }
     })
   }
@@ -40,33 +41,34 @@ function Login() {
         <div className="Login card">
             <h1 className='title'> AlgoMaster </h1>
             <form>
-                <div class="form-group">
+                <div className="form-group">
                     <label for="email_input" className='mb-2'>Your email </label>
                     <div className='input-group mb-3' >
-                      <div class="input-group-prepend">
-                        <div class="input-group-text">
+                      <div className="input-group-prepend">
+                        <div className="input-group-text">
                           <FontAwesomeIcon icon={faUser} style={{fontSize: 24}}/>
                         </div>
                       </div>
-                      <input type="email" class="form-control" id="email_input" onChange={e => setUsernameLog(e)} aria-describedby="emailHelp" placeholder="e.g. elon@tesla.com" />
+                      <input type="email" className="form-control" id="email_input" onChange={e => setUsernameLog(e.target.value)} aria-describedby="emailHelp" placeholder="e.g. elon@tesla.com" />
                     </div>
                     
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                     <label for="password_input" className='mb-2'> Your password </label>
                     <div className='input-group'>
-                      <div class="input-group-prepend">
-                        <div class="input-group-text">
+                      <div className="input-group-prepend">
+                        <div className="input-group-text">
                           <FontAwesomeIcon icon={faLock} style={{fontSize: 24}} />
                         </div>
                       </div>
-                      <input type="password" class="form-control" id="password_input" onChange={e => setPasswordLog(e)} placeholder="e.g. ilovemangoes123" />
+                      <input type="password" className="form-control" id="password_input" onChange={e => setPasswordLog(e.target.value)} placeholder="e.g. ilovemangoes123" />
                     </div>
                 </div>
             </form>
-            <button id="loginButton" type="button" class="btn btn-primary btn-block mt-3" onClick={login}>
+            <button id="loginButton" type="button" className="btn btn-primary btn-block mt-3" onClick={login}>
               <span id="loginButtonText"> Login </span> 
             </button>
+            <h4>{logStatus}</h4>
             <span id='switchToRegister' onClick={() => navigate("register")}> Don't have an account? Register here </span>
         </div>
     </div>

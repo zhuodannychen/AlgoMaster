@@ -15,6 +15,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="contests" element={<Contests />} />
+        <Route path="profile" element={<Profile />} />
         {/* <Route path="*" element={<NoPage />} /> */}
       </Routes>
     </BrowserRouter>

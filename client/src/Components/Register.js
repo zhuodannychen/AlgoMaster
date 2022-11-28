@@ -22,7 +22,7 @@ function Register() {
         console.log(response.data[1])
 
         if (response.data[0]){
-          navigate("home");
+          navigate("/");
         }
     })
   }
