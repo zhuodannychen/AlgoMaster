@@ -112,3 +112,20 @@ code {
   font-weight: 600;
   font-size: 13px;
 }
+
+#createContest {
+  margin: auto;
+}
+
+#datePicker {
+  width: 400px;
+}
+
+#inline {
+  display: inline;
+}
+
+.createContestContainer { 
+  margin: auto !important;
+  width: 600px !important;
+}

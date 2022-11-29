@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Contest from './Contest';
 import { Link } from 'react-router-dom'
@@ -49,7 +50,9 @@ function Contests() {
       </nav>
       <div className='container'>
         <div className="contests mt-5">
+          {/* Add check whether user is admin */}
           <h2 className='mb-5' style={{ textAlign: 'center'}}> Contests </h2>
+          <button className='btn mb-3' type='button' onClick={() => navigate("/create")}> <FontAwesomeIcon icon={faCirclePlus} /> Create Contest </button>
           {contests.map((arr) => <Contest name={arr[0]} date={arr[1]} time={arr[2]} seats={arr[3]} />)}
       </div>
     </div>
