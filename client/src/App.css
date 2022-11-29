@@ -125,7 +125,7 @@ code {
   display: inline;
 }
 
-.card {
+.createContestContainer { 
   margin: auto !important;
   width: 600px !important;
 }
