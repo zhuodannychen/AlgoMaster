@@ -21,6 +21,7 @@ const client = new Client({
 
 client.connect()
 
+// ################## USERS ##############
 app.get('/users', (req, res) => {
     client.query(`SELECT * FROM users`, (err, result) => {
         if(!err){
@@ -89,6 +90,27 @@ app.post('/login', (req, res)=> {
     })
     client.end;
 })
+
+// ################ CONTESTS ###############
+
+app.get('/contests', (req, res) => {
+    client.query(`SELECT * FROM contests`, (err, result) => {
+        if(!err){
+            res.send(result.rows);
+        }
+    });
+    client.end;
+})
+
+app.get('/contests/:id', (req, res)=>{
+    client.query(`Select * FROM contests WHERE conest_id=${req.params.id}`, (err, result)=>{
+        if(!err){
+            res.send(result.rows);
+        }
+    });
+    client.end;
+})
+
 
 const port = process.env.PORT || 3001; //Line 3
 // This displays message that the server running and listening to specified port

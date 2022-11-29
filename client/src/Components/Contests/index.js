@@ -4,6 +4,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Contest from './Contest';
+import Axios from 'axios'
 import { Link } from 'react-router-dom'
 import "../../App.css"
 
@@ -17,7 +18,10 @@ function Contests() {
 
   useEffect(() => {
     // Grab contests from database
-  })
+    Axios.get("http://localhost:3001/contests").then((response) => {
+        setContests(response.data)
+    })
+  }, [])
 
   return (
     <React.Fragment>
@@ -53,7 +57,7 @@ function Contests() {
           {/* Add check whether user is admin */}
           <h2 className='mb-5' style={{ textAlign: 'center'}}> Contests </h2>
           <button className='btn mb-3' type='button' onClick={() => navigate("/create")}> <FontAwesomeIcon icon={faCirclePlus} /> Create Contest </button>
-          {contests.map((arr) => <Contest name={arr[0]} date={arr[1]} time={arr[2]} seats={arr[3]} />)}
+          {contests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} date={arr['start_date']} time={arr['start_date']} participants={arr['participants']} />)}
       </div>
     </div>
     </React.Fragment>
