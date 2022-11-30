@@ -1,10 +1,10 @@
-import React, { useState }from 'react';
+import React, { useState } from 'react';
 import DatePicker from "react-datepicker"
 import TimePicker from 'react-time-picker';
-import "../App.css"
-import "../Assets/images/background.jpg"
-import image from "../Assets/images/background.jpg"
+import "../../App.css";
+import image from "../../Assets/images/background.jpg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import "react-datepicker/dist/react-datepicker.css";
 import { faPlus , faTrash, faPenToSquare, faEdit } from '@fortawesome/free-solid-svg-icons';
 import Axios from 'axios'
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +27,13 @@ export default function CreateContest() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [problemEditing, setProblemEditing] = useState("")
+
+  function clearProblemForm(){
+    setIsEditing(false);
+    setProblemName("");
+    setProblemDesc("");
+    setProblemURL("");
+  }
 
   function addProblemToContest() {
     const newQuestions = [...questions, {
@@ -96,7 +103,7 @@ export default function CreateContest() {
   }
 
   return (
-    <div style={{ backgroundImage: `url(${image})`, height: '100vh'}}>
+    <div>
       <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -168,7 +175,7 @@ export default function CreateContest() {
           </div>
           <div className='contest_questions'>
             <h5 className='mt-5'> Problems </h5>
-            <div className='btn btn-success mb-3' onClick={() => setIsEditing(false)} data-bs-toggle="modal" data-bs-target="#exampleModal"> <FontAwesomeIcon icon={faPlus} /> Create Problem </div>
+            <div className='btn btn-success mb-3' onClick={clearProblemForm} data-bs-toggle="modal" data-bs-target="#exampleModal"> <FontAwesomeIcon icon={faPlus} /> Create Problem </div>
               <ul className="list-group">
                 { questions.map((question, idx) => 
                 <li key={idx} className='list-group-item'> 
