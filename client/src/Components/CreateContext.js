@@ -6,12 +6,19 @@ import "../Assets/images/background.jpg"
 import image from "../Assets/images/background.jpg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus , faTrash, faPenToSquare, faEdit } from '@fortawesome/free-solid-svg-icons';
+import Axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateContest() {
+  const navigate = useNavigate()
   // Contest
+  const [contestName, setContestName] = useState()
   const [startDate, setStartDate] = useState(new Date());
-  const [time, setTime] = useState('10:00');
+  const [startTime, setStartTime] = useState('10:00');
+  const [endDate, setEndDate] = useState(new Date());
+  const [endTime, setEndTime] = useState('10:00');
   const [questions, setQuestions] = useState([]);
+  const [creationStatus, setCreationStatus] = useState('')
 
   // Modal - questions
   const [problemName, setProblemName] = useState("");
@@ -66,6 +73,28 @@ export default function CreateContest() {
     setProblemURL(problem.url);
   }
 
+
+  const addContest = () => {
+    console.log(contestName)
+    const startTS = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate() + ' ' + startTime + ':00'
+    const endTS = endDate.getFullYear() + '-' + (endDate.getMonth()+1) + '-' + endDate.getDate() + ' ' + endTime + ':00'
+    // console.log(startTS)
+    // console.log(endTS)
+    Axios.post("http://localhost:3001/contests", {
+        contestName: contestName,
+        startDate: startTS,
+        endDate: endTS,
+    }).then((response) => {
+        // setCreationStatus(response.data[1])
+        if (response.data[0]) {
+            navigate('/contests')
+            alert("Contest Creation Successful!")
+        } else {
+            alert(response.data[1])
+        }
+    })
+  }
+
   return (
     <div style={{ backgroundImage: `url(${image})`, height: '100vh'}}>
       <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -107,24 +136,34 @@ export default function CreateContest() {
         <form id="createContest">
           <div className="form-group">
             <label for="contestName"> Contest Name </label>
-            <input type="email" className="form-control" id="contestName" placeholder='e.g. Texas A&M CP Club Contest'/>
-          </div>
-          <div className='mt-3'>
-            <div className='mb-1'> Select date </div>
-            <DatePicker id="datePicker" selected={startDate} onChange={(date) => setStartDate(date)} />
           </div>
           <div className='mt-3'>
             <div className="row">
               <div className="col-sm">
-                <div className="mb-1"> Select time </div>
-                <TimePicker onChange={setTime} value={time} />
+                <div className='mb-1'> Select start date</div>
+                <DatePicker id="datePicker" selected={startDate} onChange={(startDate) => setStartDate(startDate)} />
               </div>
-              <div className="col-sm">      
-                <div className="form-check form-switch inline mt-4">
-                  <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
-                  <label className="form-check-label" for="flexSwitchCheckDefault"> Open to public </label>
-                </div>
+              <div className="col-sm">
+                <div className="mb-1"> Select start time (UTC)</div>
+                <TimePicker onChange={setStartTime} value={startTime} />
               </div>
+            </div>
+
+            <div className="row">
+              <div className="col-sm">
+                <div className='mb-1'> Select end date </div>
+                <DatePicker id="datePicker" selected={endDate} onChange={(endDate) => setEndDate(endDate)} />
+              </div>
+              <div className="col-sm">
+                <div className="mb-1"> Select end time (UTC)</div>
+                <TimePicker onChange={setEndTime} value={endTime} />
+              </div>
+            </div>
+          </div>
+          <div className='mt-3'>
+            <div className="form-check form-switch inline mt-4">
+              <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
+              <label className="form-check-label" for="flexSwitchCheckDefault"> Open to public </label>
             </div>
           </div>
           <div className='contest_questions'>
@@ -138,7 +177,7 @@ export default function CreateContest() {
                 }
               </ul>
             </div>
-          <button type='button' className='btn btn-outline-success w-100 mt-4'> Next Step </button>  
+          <button type='button' onClick={addContest} className='btn btn-outline-success w-100 mt-4'> Next Step </button>  
         </form>
         </div>
       </div>

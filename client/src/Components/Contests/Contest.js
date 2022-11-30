@@ -2,6 +2,21 @@ import React from 'react'
 import "../../App.css"
 
 
+const monthText = {
+    0: 'January',
+    1: 'February',
+    2: 'March',
+    3: 'April',
+    4: 'May',
+    5: 'June',
+    6: 'July',
+    7: 'August',
+    8: 'September',
+    9: 'October',
+    10: 'November',
+    11: 'December'
+}
+
 function Contest(props){
   const zeroPad = (num, places) => String(num).padStart(places, '0')
   const dateOrdinal = (day) => {
@@ -17,13 +32,11 @@ function Contest(props){
   const parseDate = (timestamp) => {
     const date = new Date(timestamp)
 
-    const month = date.toLocaleString('default', {
-        month: 'long',
-    })
-    const day = date.getDate()
-    const year = date.getFullYear()
+    const month = date.getUTCMonth()
+    const day = date.getUTCDate()
+    const year = date.getUTCFullYear()
 
-    const startTime = month + " " + day + dateOrdinal(day) + ", " + year
+    const startTime = monthText[month] + " " + day + dateOrdinal(day) + ", " + year
     return startTime
   }
 
@@ -38,8 +51,9 @@ function Contest(props){
   const getContestDuration = (startTime, endTime) => {
     const startDate = new Date(startTime)
     const endDate = new Date(endTime)
-    const hours = (endDate - startDate) / 3600000
+    const elapsedHours = (endDate - startDate) / 3600000
     // console.log(startDate, endDate, hours)
+    const hours = Math.round(elapsedHours * 100) / 100 // rounding to 2 dec places
     return hours
   }
 
