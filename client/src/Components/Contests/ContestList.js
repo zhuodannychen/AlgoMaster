@@ -19,6 +19,7 @@ function Contests() {
   useEffect(() => {
     // Grab contests from database
     Axios.get("http://localhost:3001/contests").then((response) => {
+        console.log(response.data)
         setContests(response.data)
     })
   }, [])
@@ -57,7 +58,7 @@ function Contests() {
           {/* Add check whether user is admin */}
           <h2 className='mb-5' style={{ textAlign: 'center'}}> Contests </h2>
           <button className='btn mb-3' type='button' onClick={() => navigate("/create")}> <FontAwesomeIcon icon={faCirclePlus} /> Create Contest </button>
-          {contests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} date={arr['start_date']} time={arr['start_date']} participants={arr['participants']} />)}
+          {contests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} />)}
       </div>
     </div>
     </React.Fragment>
