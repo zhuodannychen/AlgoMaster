@@ -42,7 +42,7 @@ app.get('/users/:id', (req, res)=>{
 
 app.post('/users', (req, res)=> {
     const user = req.body;
-    let insertQuery = `INSERT INTO users(username, password) 
+    const insertQuery = `INSERT INTO users(username, password) 
                        VALUES('${user.username}', '${user.password}')`
 
     client.query(insertQuery, (err, result)=>{
@@ -58,7 +58,7 @@ app.post('/users', (req, res)=> {
 })
 
 app.delete('/users/:id', (req, res)=> {
-    let insertQuery = `DELETE FROM users WHERE user_id=${req.params.id}`
+    const insertQuery = `DELETE FROM users WHERE user_id=${req.params.id}`
 
     client.query(insertQuery, (err, result)=>{
         if(!err){
@@ -73,7 +73,7 @@ app.post('/login', (req, res)=> {
     const username = req.body.username;
     const password = req.body.password;
 
-    let query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`
+    const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`
     client.query(query, (err, result)=>{
         if(err){
             res.send(err.message)
@@ -108,6 +108,23 @@ app.get('/contests/:id', (req, res)=>{
             res.send(result.rows);
         }
     });
+    client.end;
+})
+
+app.post('/contests', (req, res)=> {
+    const contest = req.body;
+    const insertQuery = `INSERT INTO contests (contest_name, start_date, end_date) 
+                       VALUES('${contest.contestName}', '${contest.startDate}', '${contest.endDate}')`
+
+    client.query(insertQuery, (err, result)=>{
+        if(!err){
+            res.send([true, 'Contest added successfully!'])
+        }
+        else{ 
+            res.send([false, err.message])
+            console.log(err.message)
+        }
+    })
     client.end;
 })
 
