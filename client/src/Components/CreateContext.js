@@ -17,6 +17,9 @@ export default function CreateContest() {
   const [problemDesc, setProblemDesc] = useState("");
   const [problemURL, setProblemURL] = useState("");
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [problemEditing, setProblemEditing] = useState("")
+
   function addProblemToContest() {
     const newQuestions = [...questions, {
       name: problemName, 
@@ -30,6 +33,36 @@ export default function CreateContest() {
     setProblemURL("");
 
     console.log(newQuestions)
+  }
+
+  function deleteProblem(name){
+    if (window.confirm("Are you sure?") == true){
+      const problems = questions.filter((q) => q.name !== name)
+      setQuestions(problems)
+    }
+  }
+
+  function updateProblem(){
+    console.log(problemEditing)
+    const updated_questions = [...questions]
+    updated_questions.map(q => {
+      if (q.name == problemEditing){
+        q.name = problemName;
+        q.desc = problemDesc;
+        q.url = problemURL;
+      }
+    })
+
+    setQuestions(updated_questions)
+  }
+
+  function editProblem(problem){
+    setIsEditing(true);
+    setProblemEditing(problem.name)
+
+    setProblemName(problem.name);
+    setProblemDesc(problem.desc);
+    setProblemURL(problem.url);
   }
 
   return (
@@ -59,7 +92,10 @@ export default function CreateContest() {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" className="btn btn-success" onClick={addProblemToContest} data-bs-dismiss="modal"> Add Problem </button>
+              { isEditing ? 
+              <button type='button' className='btn btn-warning' onClick={updateProblem} data-bs-dismiss="modal"> Finish Edit</button> 
+                : 
+              <button type="button" className="btn btn-success" onClick={addProblemToContest} data-bs-dismiss="modal"> Add Problem </button>}
             </div>
           </div>
         </div>
@@ -92,11 +128,11 @@ export default function CreateContest() {
           </div>
           <div className='contest_questions'>
             <h5 className='mt-5'> Problems </h5>
-            <div className='btn btn-success mb-3' data-bs-toggle="modal" data-bs-target="#exampleModal"> <FontAwesomeIcon icon={faPlus} /> Create Problem </div>
+            <div className='btn btn-success mb-3' onClick={() => setIsEditing(false)} data-bs-toggle="modal" data-bs-target="#exampleModal"> <FontAwesomeIcon icon={faPlus} /> Create Problem </div>
               <ul className="list-group">
-                { questions.map(question => 
-                <li className='list-group-item'> 
-                  {question.name} <span className='float-end'> <FontAwesomeIcon icon={faEdit} /> <FontAwesomeIcon icon={faTrash} /> </span>
+                { questions.map((question, idx) => 
+                <li key={idx} className='list-group-item'> 
+                  {question.name} <span className='float-end'> <FontAwesomeIcon className='pointerOnHover' icon={faEdit} onClick={() => editProblem(question)} data-bs-toggle="modal" data-bs-target="#exampleModal" /> <FontAwesomeIcon className='pointerOnHover' icon={faTrash} onClick={() => deleteProblem(question.name)} /> </span>
                 </li>) 
                 }
               </ul>
