@@ -63,9 +63,9 @@ function Contest(props){
         <div class="row">
           <div class="col-sm contest-name mt-"> {props.name} </div>
           <div class="col-sm" style={{textAlign: 'right'}}> 
-            <span className='contest_info'>  {props.start_date} </span>
-            <span id="duration"> {props.time} </span>
-            <span id="participants"> {props.seats} seats left </span>
+            <span className='contest_info'>  {parseDate(props.start_date)}, {parseTime(props.start_date)} </span>
+            <span id="duration"> {getContestDuration(props.start_date, props.end_date)} hours </span>
+            <span id="participants"> {props.participants} participants </span>
             <button className="btn btn-outline-success" style={{textColor: 'green'}} type='button'> Sign Up </button>
           </div>
         </div>
