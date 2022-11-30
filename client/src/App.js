@@ -1,6 +1,6 @@
 import Login from './Components/Login'
 import Register from './Components/Register'
-import Contests from "./Components/Contests"
+import Contests from "./Components/Contests/ContestList"
 import CreateContest from './Components/CreateContext'
 import Profile from './Components/Profile'
 import './App.css'

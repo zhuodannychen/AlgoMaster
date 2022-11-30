@@ -16,7 +16,7 @@ function Login() {
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("authenticated")) || false;
     if (loggedInUser) {
-        navigate("/profile");
+        navigate("/contests");
     }
   }, []);
 
@@ -31,7 +31,7 @@ function Login() {
         if (response.data[0]) {
             // loggedInUser = true
             localStorage.setItem("authenticated", JSON.stringify(true));
-            navigate("/profile");
+            navigate("/contests");
         }
     })
   }

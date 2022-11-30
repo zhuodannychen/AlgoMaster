@@ -107,7 +107,13 @@ code {
   font-weight: bold;
 }
 
-#seats_left {
+#duration {
+  margin-right: 5px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+#participants {
   margin-right: 5px;
   font-weight: 600;
   font-size: 13px;

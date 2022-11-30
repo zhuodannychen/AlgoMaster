@@ -107,7 +107,7 @@ export default function CreateContest() {
         <form id="createContest">
           <div className="form-group">
             <label for="contestName"> Contest Name </label>
-            <input type="email" className="form-control" id="contestName" />
+            <input type="email" className="form-control" id="contestName" placeholder='e.g. Texas A&M CP Club Contest'/>
           </div>
           <div className='mt-3'>
             <div className='mb-1'> Select date </div>

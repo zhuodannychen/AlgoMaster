@@ -5,6 +5,7 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Contest from './Contest';
 import image from "../../Assets/images/background.jpg"
+import Axios from 'axios'
 import { Link } from 'react-router-dom'
 import "../../App.css"
 
@@ -18,7 +19,11 @@ function Contests() {
 
   useEffect(() => {
     // Grab contests from database
-  })
+    Axios.get("http://localhost:3001/contests").then((response) => {
+        console.log(response.data)
+        setContests(response.data)
+    })
+  }, [])
 
   return (
     <div style={{ backgroundImage: `url(${image})`, height: '100vh'}}>
