@@ -9,18 +9,38 @@ import { Link } from 'react-router-dom'
 import "../../App.css"
 
 function Contests() {
-  const navigate = useNavigate();
-  const [contests, setContests] = useState([
-    ["DTCC Code-A-Thon", "Aug 27th 2021", "11 am CST", 25],
-    ["Celebrate PRIDE 2021 Coding Contest", "June 25th, 2021", "11:00 am CST", 53],
-    ["COVID-19 Relief for India Coding Challenge", "June 16th, 2021", "1:30 am CST", 14]
-  ]);
+  const navigate = useNavigate()
+  const [pastContests, setPastContests] = useState([]) // includes past contests
+  const [futureContests, setFutureContests] = useState([]) // includes present and future contests
+
+  const contestSplit = (contests) => {
+    let low = 0
+    let high = contests.length-1
+    const curDate = new Date(Date.now())
+    const curTS = curDate.getUTCFullYear() + '-' + (curDate.getUTCMonth()+1) + '-' + curDate.getUTCDate() + ' ' + curDate.getUTCHours() + ':' + curDate.getMinutes() + ':' + curDate.getSeconds()
+    console.log(curTS)
+    console.log(contests)
+
+    while (low < high) {
+        let mid = low + Math.floor((high - low + 1) / 2)
+        if (curTS < contests[mid]['end_date'])
+            high = mid - 1;
+        else
+            low = mid
+    }
+    return low
+  }
 
   useEffect(() => {
     // Grab contests from database
     Axios.get("http://localhost:3001/contests").then((response) => {
-        console.log(response.data)
-        setContests(response.data)
+        const allContests = response.data
+        const splitIdx = contestSplit(allContests)
+        const past = allContests.slice(0, splitIdx)
+        const future = allContests.slice(splitIdx, allContests.length)
+        
+        setFutureContests(future)
+        setPastContests(past.reverse())
     })
   }, [])
 
@@ -58,7 +78,10 @@ function Contests() {
           {/* Add check whether user is admin */}
           <h2 className='mb-5' style={{ textAlign: 'center'}}> Contests </h2>
           <button className='btn mb-3' type='button' onClick={() => navigate("/create")}> <FontAwesomeIcon icon={faCirclePlus} /> Create Contest </button>
-          {contests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} />)}
+          <h6>Current or upcoming contests</h6>
+          {futureContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} />)}
+          <h6>Past contests</h6>
+          {pastContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} />)}
       </div>
     </div>
     </React.Fragment>

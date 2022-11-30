@@ -94,7 +94,7 @@ app.post('/login', (req, res)=> {
 // ################ CONTESTS ###############
 
 app.get('/contests', (req, res) => {
-    client.query(`SELECT * FROM contests`, (err, result) => {
+    client.query(`SELECT * FROM contests ORDER BY start_date`, (err, result) => {
         if(!err){
             res.send(result.rows);
         }
@@ -103,7 +103,7 @@ app.get('/contests', (req, res) => {
 })
 
 app.get('/contests/:id', (req, res)=>{
-    client.query(`Select * FROM contests WHERE conest_id=${req.params.id}`, (err, result)=>{
+    client.query(`Select * FROM contests WHERE contest_id=${req.params.id}`, (err, result)=>{
         if(!err){
             res.send(result.rows);
         }
@@ -116,10 +116,14 @@ app.post('/contests', (req, res)=> {
     const insertQuery = `INSERT INTO contests (contest_name, start_date, end_date) 
                        VALUES('${contest.contestName}', '${contest.startDate}', '${contest.endDate}')`
 
+    const curDate = new Date(Date.now())
+    const curTS = curDate.getUTCFullYear() + '-' + (curDate.getUTCMonth()+1) + '-' + curDate.getUTCDate() + ' ' + curDate.getUTCHours() + ':' + curDate.getMinutes() + ':' + curDate.getSeconds()
     if (contest.contestName == '') {
         return res.send([false, 'Contest name cannot be empty!'])
     } else if (contest.endDate <= contest.startDate) {
         return res.send([false, 'end time before start time!'])
+    } else if (contest.startDate < curTS) {
+        return res.send([false, 'start time is before current time!'])
     }
 
 
