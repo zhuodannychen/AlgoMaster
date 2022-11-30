@@ -143,6 +143,7 @@ export default function CreateContest() {
         <form id="createContest">
           <div className="form-group">
             <label for="contestName"> Contest Name </label>
+            <input type="text" className="form-control"  placeholder="e.g. Aggie CCC Competition" onChange={(e) => setContestName(e.target.value)} value={contestName} />
           </div>
           <div className='mt-3'>
             <div className="row">
