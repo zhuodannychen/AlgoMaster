@@ -116,6 +116,13 @@ app.post('/contests', (req, res)=> {
     const insertQuery = `INSERT INTO contests (contest_name, start_date, end_date) 
                        VALUES('${contest.contestName}', '${contest.startDate}', '${contest.endDate}')`
 
+    if (contest.contestName == '') {
+        return res.send([false, 'Contest name cannot be empty!'])
+    } else if (contest.endDate <= contest.startDate) {
+        return res.send([false, 'end time before start time!'])
+    }
+
+
     client.query(insertQuery, (err, result)=>{
         if(!err){
             res.send([true, 'Contest added successfully!'])

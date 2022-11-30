@@ -38,8 +38,9 @@ function Contest(props){
   const getContestDuration = (startTime, endTime) => {
     const startDate = new Date(startTime)
     const endDate = new Date(endTime)
-    const hours = (endDate - startDate) / 3600000
+    const elapsedHours = (endDate - startDate) / 3600000
     // console.log(startDate, endDate, hours)
+    const hours = Math.round(elapsedHours * 100) / 100 // rounding to 2 dec places
     return hours
   }
 
