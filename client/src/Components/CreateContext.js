@@ -2,7 +2,8 @@ import React, { useState }from 'react';
 import DatePicker from "react-datepicker"
 import TimePicker from 'react-time-picker';
 import "../App.css"
-import "react-datepicker/dist/react-datepicker.css";
+import "../Assets/images/background.jpg"
+import image from "../Assets/images/background.jpg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus , faTrash, faPenToSquare, faEdit } from '@fortawesome/free-solid-svg-icons';
 
@@ -66,7 +67,7 @@ export default function CreateContest() {
   }
 
   return (
-    <div>
+    <div style={{ backgroundImage: `url(${image})`, height: '100vh'}}>
       <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -100,13 +101,13 @@ export default function CreateContest() {
           </div>
         </div>
       </div>
-      <div className="container mt-5">
+      <div className="container pt-5">
         <div className='card pt-5 pb-5 createContestContainer'>
         <h2 className='mb-5' style={{textAlign: 'center'}}> Create Contest </h2> 
         <form id="createContest">
           <div className="form-group">
             <label for="contestName"> Contest Name </label>
-            <input type="email" className="form-control" id="contestName" />
+            <input type="email" className="form-control" id="contestName" placeholder='e.g. Texas A&M CP Club Contest'/>
           </div>
           <div className='mt-3'>
             <div className='mb-1'> Select date </div>

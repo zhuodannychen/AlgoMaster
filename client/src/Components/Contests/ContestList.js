@@ -4,6 +4,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Contest from './Contest';
+import image from "../../Assets/images/background.jpg"
 import Axios from 'axios'
 import { Link } from 'react-router-dom'
 import "../../App.css"
@@ -25,7 +26,7 @@ function Contests() {
   }, [])
 
   return (
-    <React.Fragment>
+    <div style={{ backgroundImage: `url(${image})`, height: '100vh'}}>
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div className='container'>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,12 +57,12 @@ function Contests() {
       <div className='container'>
         <div className="contests mt-5">
           {/* Add check whether user is admin */}
-          <h2 className='mb-5' style={{ textAlign: 'center'}}> Contests </h2>
-          <button className='btn mb-3' type='button' onClick={() => navigate("/create")}> <FontAwesomeIcon icon={faCirclePlus} /> Create Contest </button>
-          {contests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} />)}
+          <h2 className='mb-5' style={{ textAlign: 'center', color: 'white'}}> Contests </h2>
+          <button className='btn mb-3' type='button' onClick={() => navigate("/create")} style={{color: 'white'}}> <FontAwesomeIcon icon={faCirclePlus} /> Create Contest </button>
+          {contests.map((arr) => <Contest name={arr[0]} date={arr[1]} time={arr[2]} seats={arr[3]} />)}
       </div>
     </div>
-    </React.Fragment>
+    </div>
     
   
   );

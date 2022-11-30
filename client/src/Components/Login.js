@@ -51,7 +51,6 @@ function Login() {
                       </div>
                       <input type="email" className="form-control" id="email_input" onChange={e => setUsernameLog(e.target.value)} aria-describedby="emailHelp" placeholder="e.g. elon@tesla.com" />
                     </div>
-                    
                 </div>
                 <div className="form-group">
                     <label for="password_input" className='mb-2'> Your password </label>
