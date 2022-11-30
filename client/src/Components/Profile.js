@@ -19,7 +19,7 @@ function Profile() {
 
     const logout = () => {
         localStorage.setItem("authenticated", JSON.stringify(false));
-        navigate("/");
+        navigate("/"); // back to login page
     }
 
 
