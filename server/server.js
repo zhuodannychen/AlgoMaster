@@ -3,6 +3,9 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const { Client } = require('pg')
 
+// const users = require("./routes/users")
+// const contests = require("./routes/contests")
+
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
@@ -10,6 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
 const app = express(); 
 app.use(cors())
 app.use(bodyParser.json());
+
 
 const client = new Client({
   host: process.env.DB_HOST,
@@ -20,6 +24,10 @@ const client = new Client({
 })
 
 client.connect()
+
+// use these routes
+// app.use("/users", users)
+// app.use("/contests", contests)
 
 // ################## USERS ##############
 app.get('/users', (req, res) => {
@@ -77,30 +85,8 @@ app.delete('/users/:id', (req, res)=> {
     client.end;
 })
 
-app.post('/login', (req, res)=> {
-    const username = req.body.username;
-    const password = req.body.password;
-
-    const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`
-    client.query(query, (err, result)=>{
-        if(err){
-            res.send(err.message)
-        }
-
-        console.log(result)
-        if (result.rowCount > 0) {
-            res.send([true, 'Login success!'])
-        }
-        else{ 
-            res.send([false, 'Wrong username or password.'])
-            console.log('Wrong username or password.')
-        }
-    })
-    client.end;
-})
 
 // ################ CONTESTS ###############
-
 app.get('/contests', (req, res) => {
     client.query(`SELECT * FROM contests ORDER BY start_date`, (err, result) => {
         if(!err){
@@ -142,6 +128,30 @@ app.post('/contests', (req, res)=> {
         else{ 
             res.send([false, err.message])
             console.log(err.message)
+        }
+    })
+    client.end;
+})
+
+
+// ########## LOGIN ###########
+app.post('/login', (req, res)=> {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`
+    client.query(query, (err, result)=>{
+        if(err){
+            res.send(err.message)
+        }
+
+        console.log(result)
+        if (result.rowCount > 0) {
+            res.send([true, 'Login success!'])
+        }
+        else{ 
+            res.send([false, 'Wrong username or password.'])
+            console.log('Wrong username or password.')
         }
     })
     client.end;
