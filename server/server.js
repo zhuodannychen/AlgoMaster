@@ -42,8 +42,16 @@ app.get('/users/:id', (req, res)=>{
 
 app.post('/users', (req, res)=> {
     const user = req.body;
-    const insertQuery = `INSERT INTO users(username, password) 
-                       VALUES('${user.username}', '${user.password}')`
+    const insertQuery = `INSERT INTO users(firstname, lastname, username, password, isadmin) 
+                       VALUES('${user.firstname}', '${user.lastname}', '${user.username}', '${user.password}', false)`
+    
+    if (user.firstname === '' || user.lastname === '') {
+        return res.send([false, 'name field cannot be empty'])
+    } else if (user.username === '') {
+        return res.send([false, 'username cannot be empty'])
+    } else if (user.password.length < 8) {
+        return res.send([false, 'password needs to be at least 8 characters long!'])
+    }
 
     client.query(insertQuery, (err, result)=>{
         if(!err){
