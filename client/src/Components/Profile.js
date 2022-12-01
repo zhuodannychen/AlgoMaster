@@ -21,6 +21,10 @@ function Profile() {
         localStorage.setItem("authenticated", JSON.stringify(false));
         navigate("/"); // back to login page
     }
+    
+    const displayName = () => {
+        
+    }
 
 
     return (

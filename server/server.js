@@ -3,6 +3,9 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const { Client } = require('pg')
 
+// const users = require("./routes/users")
+// const contests = require("./routes/contests")
+
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
@@ -10,6 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
 const app = express(); 
 app.use(cors())
 app.use(bodyParser.json());
+
 
 const client = new Client({
   host: process.env.DB_HOST,
@@ -20,6 +24,10 @@ const client = new Client({
 })
 
 client.connect()
+
+// use these routes
+// app.use("/users", users)
+// app.use("/contests", contests)
 
 // ################## USERS ##############
 app.get('/users', (req, res) => {
@@ -42,8 +50,16 @@ app.get('/users/:id', (req, res)=>{
 
 app.post('/users', (req, res)=> {
     const user = req.body;
-    const insertQuery = `INSERT INTO users(username, password) 
-                       VALUES('${user.username}', '${user.password}')`
+    const insertQuery = `INSERT INTO users(firstname, lastname, username, password, isadmin) 
+                       VALUES('${user.firstname}', '${user.lastname}', '${user.username}', '${user.password}', false)`
+    
+    if (user.firstname === '' || user.lastname === '') {
+        return res.send([false, 'name field cannot be empty'])
+    } else if (user.username === '') {
+        return res.send([false, 'username cannot be empty'])
+    } else if (user.password.length < 8) {
+        return res.send([false, 'password needs to be at least 8 characters long!'])
+    }
 
     client.query(insertQuery, (err, result)=>{
         if(!err){
@@ -69,30 +85,8 @@ app.delete('/users/:id', (req, res)=> {
     client.end;
 })
 
-app.post('/login', (req, res)=> {
-    const username = req.body.username;
-    const password = req.body.password;
-
-    const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`
-    client.query(query, (err, result)=>{
-        if(err){
-            res.send(err.message)
-        }
-
-        console.log(result)
-        if (result.rowCount > 0) {
-            res.send([true, 'Login success!'])
-        }
-        else{ 
-            res.send([false, 'Wrong username or password.'])
-            console.log('Wrong username or password.')
-        }
-    })
-    client.end;
-})
 
 // ################ CONTESTS ###############
-
 app.get('/contests', (req, res) => {
     client.query(`SELECT * FROM contests ORDER BY start_date`, (err, result) => {
         if(!err){
@@ -134,6 +128,30 @@ app.post('/contests', (req, res)=> {
         else{ 
             res.send([false, err.message])
             console.log(err.message)
+        }
+    })
+    client.end;
+})
+
+
+// ########## LOGIN ###########
+app.post('/login', (req, res)=> {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`
+    client.query(query, (err, result)=>{
+        if(err){
+            res.send(err.message)
+        }
+
+        console.log(result)
+        if (result.rowCount > 0) {
+            res.send([true, 'Login success!'])
+        }
+        else{ 
+            res.send([false, 'Wrong username or password.'])
+            console.log('Wrong username or password.')
         }
     })
     client.end;
