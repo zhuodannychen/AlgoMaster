@@ -36,24 +36,48 @@ export default function CreateContest() {
   }
 
   function addProblemToContest() {
-    const newQuestions = [...questions, {
+    let newQuestion = {
+      id: -1,
       name: problemName, 
       desc: problemDesc, 
       url: problemURL
-    }]
+    }
 
-    setQuestions(newQuestions)
+    Axios.post("http://localhost:3001/problems", {
+        problemName: problemName,
+        problemDesc: problemDesc,
+        problemUrl: problemURL
+    }).then((response) => {
+        if (response.data[0]) {
+            console.log('problem added!')
+            newQuestion.id = response.data[1]
+        }
+    })
+
     setProblemName("");
     setProblemDesc("");
     setProblemURL("");
 
+    const newQuestions = [...questions, newQuestion]
+    setQuestions(newQuestions)
     console.log(newQuestions)
   }
 
-  function deleteProblem(name){
+  function deleteProblem(id){
     if (window.confirm("Are you sure?") == true){
-      const problems = questions.filter((q) => q.name !== name)
+      const problems = questions.filter((q) => q.id !== id)
+      const deletedProblem = questions.filter((q) => q.id === id)
       setQuestions(problems)
+
+      Axios.delete("http://localhost:3001/problems/" + deletedProblem[0].id)
+        .then((response) => {
+        // setCreationStatus(response.data[1])
+            if (response.data[0]) {
+                console.log('deleted')
+            } else {
+                alert(response.data[1])
+            }
+        })
     }
   }
 
@@ -82,7 +106,6 @@ export default function CreateContest() {
 
 
   const addContest = () => {
-    console.log(contestName)
     const startTS = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate() + ' ' + startTime + ':00'
     const endTS = endDate.getFullYear() + '-' + (endDate.getMonth()+1) + '-' + endDate.getDate() + ' ' + endTime + ':00'
     // console.log(startTS)
@@ -94,8 +117,8 @@ export default function CreateContest() {
     }).then((response) => {
         // setCreationStatus(response.data[1])
         if (response.data[0]) {
-            navigate('/contests')
             alert("Contest Creation Successful!")
+            navigate('/contests')
         } else {
             alert(response.data[1])
         }
@@ -178,9 +201,9 @@ export default function CreateContest() {
             <h5 className='mt-5'> Problems </h5>
             <div className='btn btn-success mb-3' onClick={clearProblemForm} data-bs-toggle="modal" data-bs-target="#exampleModal"> <FontAwesomeIcon icon={faPlus} /> Create Problem </div>
               <ul className="list-group">
-                { questions.map((question, idx) => 
-                <li key={idx} className='list-group-item'> 
-                  {question.name} <span className='float-end'> <FontAwesomeIcon className='pointerOnHover' icon={faEdit} onClick={() => editProblem(question)} data-bs-toggle="modal" data-bs-target="#exampleModal" /> <FontAwesomeIcon className='pointerOnHover' icon={faTrash} onClick={() => deleteProblem(question.name)} /> </span>
+                { questions.map((question) => 
+                <li key={question.id} className='list-group-item'> 
+                  {question.name} <span className='float-end'> <FontAwesomeIcon className='pointerOnHover' icon={faEdit} onClick={() => editProblem(question)} data-bs-toggle="modal" data-bs-target="#exampleModal" /> <FontAwesomeIcon className='pointerOnHover' icon={faTrash} onClick={() => deleteProblem(question.id)} /> </span>
                 </li>) 
                 }
               </ul>

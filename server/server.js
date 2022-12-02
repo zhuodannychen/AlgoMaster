@@ -86,6 +86,56 @@ app.delete('/users/:id', (req, res)=> {
 })
 
 
+// ################ Problems ###############
+app.get('/problems', (req, res) => {
+    client.query(`SELECT * FROM problems`, (err, result) => {
+        if(!err){
+            res.send(result.rows);
+        }
+    });
+    client.end;
+})
+
+app.get('/problems/:id', (req, res)=>{
+    client.query(`Select * FROM problems WHERE problem_id=${req.params.id}`, (err, result)=>{
+        if(!err){
+            res.send(result.rows);
+        }
+    });
+    client.end;
+})
+
+app.post('/problems', (req, res)=> {
+    const problem = req.body;
+    const insertQuery = `INSERT INTO problems (problem_name, problem_desc, problem_url) 
+                       VALUES('${problem.problemName}', '${problem.problemDesc}', '${problem.problemUrl}') RETURNING problem_id`
+
+    client.query(insertQuery, (err, result)=>{
+        if(!err){
+            res.send([true, result['rows'][0]['problem_id']]) // send back id generated in psql serial id
+        }
+        else{ 
+            res.send([false, err.message])
+            console.log(err.message)
+        }
+    })
+    client.end;
+})
+
+app.delete('/problems/:id', (req, res)=> {
+    const insertQuery = `DELETE FROM problems WHERE problem_id=${req.params.id}`
+
+    client.query(insertQuery, (err, result)=>{
+        if(!err){
+            res.send('Deletion was successful')
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
+
+
+
 // ################ CONTESTS ###############
 app.get('/contests', (req, res) => {
     client.query(`SELECT * FROM contests ORDER BY start_date`, (err, result) => {

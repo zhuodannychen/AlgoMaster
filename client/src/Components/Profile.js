@@ -22,9 +22,23 @@ function Profile() {
         navigate("/"); // back to login page
     }
     
-    const displayName = () => {
-        
-    }
+    // const displayName = () => {
+    //     Axios.post("http://localhost:3001/users", {
+    //         firstname: firstName,
+    //         lastname: lastName,
+    //         username: usernameReg,
+    //         password: passwordReg,
+    //     }).then((response) => {
+    //         setRegStatus(response.data[0])
+    
+    //         if (response.data[0]){
+    //           alert('Account created successfully!')
+    //           navigate("/");
+    //         } else {
+    //           alert(response.data[1])
+    //         }
+    //     })
+    // } 
 
 
     return (
