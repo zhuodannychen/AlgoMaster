@@ -105,20 +105,29 @@ app.get('/problems/:id', (req, res)=>{
     client.end;
 })
 
-app.post('/problems', (req, res)=> {
+app.post('/problems', async (req, res)=> {
     const problem = req.body;
-    const insertQuery = `INSERT INTO problems (problem_name, problem_desc, problem_url) 
+    const insertProblem = `INSERT INTO problems (problem_name, problem_desc, problem_url) 
                        VALUES('${problem.problemName}', '${problem.problemDesc}', '${problem.problemUrl}') RETURNING problem_id`
 
-    client.query(insertQuery, (err, result)=>{
+
+    const result = await client.query(insertProblem)
+    const problemId = result['rows'][0]['problem_id']
+
+    // console.log('reached', problemId)
+    const insertBridge = `INSERT INTO contest_problem (contest_id, problem_id) 
+    VALUES (${problem.contestId}, ${problemId})`
+
+    client.query(insertBridge, (err, result)=>{
         if(!err){
-            res.send([true, result['rows'][0]['problem_id']]) // send back id generated in psql serial id
+            res.send([true, problemId])
         }
         else{ 
             res.send([false, err.message])
             console.log(err.message)
         }
     })
+
     client.end;
 })
 
@@ -158,22 +167,11 @@ app.get('/contests/:id', (req, res)=>{
 app.post('/contests', (req, res)=> {
     const contest = req.body;
     const insertQuery = `INSERT INTO contests (contest_name, start_date, end_date) 
-                       VALUES('${contest.contestName}', '${contest.startDate}', '${contest.endDate}')`
-
-    const curDate = new Date(Date.now())
-    const curTS = curDate.getUTCFullYear() + '-' + (curDate.getUTCMonth()+1) + '-' + curDate.getUTCDate() + ' ' + curDate.getUTCHours() + ':' + curDate.getMinutes() + ':' + curDate.getSeconds()
-    if (contest.contestName == '') {
-        return res.send([false, 'Contest name cannot be empty!'])
-    } else if (contest.endDate <= contest.startDate) {
-        return res.send([false, 'end time before start time!'])
-    } else if (contest.startDate < curTS) {
-        return res.send([false, 'start time is before current time!'])
-    }
-
+                       VALUES('${contest.contestName}', '${contest.startDate}', '${contest.endDate}') RETURNING contest_id`
 
     client.query(insertQuery, (err, result)=>{
         if(!err){
-            res.send([true, 'Contest added successfully!'])
+            res.send([true, result['rows'][0]['contest_id']])
         }
         else{ 
             res.send([false, err.message])

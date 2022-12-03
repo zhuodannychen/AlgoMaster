@@ -32,9 +32,9 @@ function Contest(props){
   const parseDate = (timestamp) => {
     const date = new Date(timestamp)
 
-    const month = date.getUTCMonth()
-    const day = date.getUTCDate()
-    const year = date.getUTCFullYear()
+    const month = zeroPad(date.getMonth(), 2)
+    const day = zeroPad(date.getDate(), 2)
+    const year = zeroPad(date.getFullYear(), 2)
 
     const startTime = monthText[month] + " " + day + dateOrdinal(day) + ", " + year
     return startTime
@@ -44,7 +44,7 @@ function Contest(props){
     const date = new Date(timestamp)
 
     const hours = date.getUTCHours()
-    const minutes = zeroPad(date.getUTCMinutes(), 2)
+    const minutes = zeroPad(date.getMinutes(), 2)
     return hours + ":" + minutes + " UTC"
   }
 

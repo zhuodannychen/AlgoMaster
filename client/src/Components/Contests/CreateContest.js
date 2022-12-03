@@ -28,6 +28,9 @@ export default function CreateContest() {
   const [isEditing, setIsEditing] = useState(false);
   const [problemEditing, setProblemEditing] = useState("")
 
+
+  const zeroPad = (num, places) => String(num).padStart(places, '0')
+
   function clearProblemForm(){
     setIsEditing(false);
     setProblemName("");
@@ -43,17 +46,6 @@ export default function CreateContest() {
       url: problemURL
     }
 
-    Axios.post("http://localhost:3001/problems", {
-        problemName: problemName,
-        problemDesc: problemDesc,
-        problemUrl: problemURL
-    }).then((response) => {
-        if (response.data[0]) {
-            console.log('problem added!')
-            newQuestion.id = response.data[1]
-        }
-    })
-
     setProblemName("");
     setProblemDesc("");
     setProblemURL("");
@@ -63,21 +55,10 @@ export default function CreateContest() {
     console.log(newQuestions)
   }
 
-  function deleteProblem(id){
+  function deleteProblem(idx){
     if (window.confirm("Are you sure?") == true){
-      const problems = questions.filter((q) => q.id !== id)
-      const deletedProblem = questions.filter((q) => q.id === id)
+      const problems = questions.slice(0, idx).concat(questions.slice(idx+1))
       setQuestions(problems)
-
-      Axios.delete("http://localhost:3001/problems/" + deletedProblem[0].id)
-        .then((response) => {
-        // setCreationStatus(response.data[1])
-            if (response.data[0]) {
-                console.log('deleted')
-            } else {
-                alert(response.data[1])
-            }
-        })
     }
   }
 
@@ -105,24 +86,50 @@ export default function CreateContest() {
   }
 
 
-  const addContest = () => {
-    const startTS = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate() + ' ' + startTime + ':00'
-    const endTS = endDate.getFullYear() + '-' + (endDate.getMonth()+1) + '-' + endDate.getDate() + ' ' + endTime + ':00'
-    // console.log(startTS)
-    // console.log(endTS)
-    Axios.post("http://localhost:3001/contests", {
+  const addContest = async () => {
+    const startTS = startDate.getFullYear() + '-' + zeroPad((startDate.getMonth()+1), 2) + '-' + zeroPad(startDate.getDate(), 2) + ' ' + startTime + ':00'
+    const endTS = endDate.getFullYear() + '-' + zeroPad((endDate.getMonth()+1), 2) + '-' + zeroPad(endDate.getDate(), 2) + ' ' + endTime + ':00'
+    const curDate = new Date(Date.now())
+    const curTS = curDate.getUTCFullYear() + '-' + zeroPad((curDate.getUTCMonth()+1), 2) + '-' + zeroPad(curDate.getUTCDate(), 2) + ' ' + zeroPad(curDate.getUTCHours(), 2) + ':' + zeroPad(curDate.getMinutes(),2) + ':' + zeroPad(curDate.getSeconds(), 2)
+
+    if (contestName === '') {
+        alert('Contest name cannot be empty!')
+        return false
+    } else if (endTS <= startTS) {
+        console.log(endTS, startTS)
+        alert('end time before start time!')
+        return false
+    } else if (startTS < curTS) {
+        console.log(startTS, curTS)
+        alert('start time is before current time!')
+        return false
+    }
+
+
+    console.log(startTS, endTS)
+    const response = await Axios.post("http://localhost:3001/contests", {
         contestName: contestName,
         startDate: startTS,
         endDate: endTS,
-    }).then((response) => {
-        // setCreationStatus(response.data[1])
-        if (response.data[0]) {
-            alert("Contest Creation Successful!")
-            navigate('/contests')
-        } else {
-            alert(response.data[1])
-        }
     })
+
+    if (response.data[0]) {
+        const contestID = response.data[1]
+        for (let question of questions) {
+            Axios.post("http://localhost:3001/problems", {
+                contestId: contestID,
+                problemName: question.name,
+                problemDesc: question.desc,
+                problemUrl: question.url 
+            }).then((response) => {
+                if (response.data[0]) {
+                    console.log('problem added!')
+                    question.id = response.data[1]
+                }
+            })
+        }
+        navigate('/contests')
+    }
   }
 
   return (
@@ -201,9 +208,9 @@ export default function CreateContest() {
             <h5 className='mt-5'> Problems </h5>
             <div className='btn btn-success mb-3' onClick={clearProblemForm} data-bs-toggle="modal" data-bs-target="#exampleModal"> <FontAwesomeIcon icon={faPlus} /> Create Problem </div>
               <ul className="list-group">
-                { questions.map((question) => 
-                <li key={question.id} className='list-group-item'> 
-                  {question.name} <span className='float-end'> <FontAwesomeIcon className='pointerOnHover' icon={faEdit} onClick={() => editProblem(question)} data-bs-toggle="modal" data-bs-target="#exampleModal" /> <FontAwesomeIcon className='pointerOnHover' icon={faTrash} onClick={() => deleteProblem(question.id)} /> </span>
+                { questions.map((question, idx) => 
+                <li key={idx} className='list-group-item'> 
+                  {question.name} <span className='float-end'> <FontAwesomeIcon className='pointerOnHover' icon={faEdit} onClick={() => editProblem(question)} data-bs-toggle="modal" data-bs-target="#exampleModal" /> <FontAwesomeIcon className='pointerOnHover' icon={faTrash} onClick={() => deleteProblem(idx)} /> </span>
                 </li>) 
                 }
               </ul>
