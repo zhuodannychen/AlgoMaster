@@ -86,6 +86,65 @@ app.delete('/users/:id', (req, res)=> {
 })
 
 
+// ################ Problems ###############
+app.get('/problems', (req, res) => {
+    client.query(`SELECT * FROM problems`, (err, result) => {
+        if(!err){
+            res.send(result.rows);
+        }
+    });
+    client.end;
+})
+
+app.get('/problems/:id', (req, res)=>{
+    client.query(`Select * FROM problems WHERE problem_id=${req.params.id}`, (err, result)=>{
+        if(!err){
+            res.send(result.rows);
+        }
+    });
+    client.end;
+})
+
+app.post('/problems', async (req, res)=> {
+    const problem = req.body;
+    const insertProblem = `INSERT INTO problems (problem_name, problem_desc, problem_url) 
+                       VALUES('${problem.problemName}', '${problem.problemDesc}', '${problem.problemUrl}') RETURNING problem_id`
+
+
+    const result = await client.query(insertProblem)
+    const problemId = result['rows'][0]['problem_id']
+
+    // console.log('reached', problemId)
+    const insertBridge = `INSERT INTO contest_problem (contest_id, problem_id) 
+    VALUES (${problem.contestId}, ${problemId})`
+
+    client.query(insertBridge, (err, result)=>{
+        if(!err){
+            res.send([true, problemId])
+        }
+        else{ 
+            res.send([false, err.message])
+            console.log(err.message)
+        }
+    })
+
+    client.end;
+})
+
+app.delete('/problems/:id', (req, res)=> {
+    const insertQuery = `DELETE FROM problems WHERE problem_id=${req.params.id}`
+
+    client.query(insertQuery, (err, result)=>{
+        if(!err){
+            res.send('Deletion was successful')
+        }
+        else{ console.log(err.message) }
+    })
+    client.end;
+})
+
+
+
 // ################ CONTESTS ###############
 app.get('/contests', (req, res) => {
     client.query(`SELECT * FROM contests ORDER BY start_date`, (err, result) => {
@@ -108,22 +167,11 @@ app.get('/contests/:id', (req, res)=>{
 app.post('/contests', (req, res)=> {
     const contest = req.body;
     const insertQuery = `INSERT INTO contests (contest_name, start_date, end_date) 
-                       VALUES('${contest.contestName}', '${contest.startDate}', '${contest.endDate}')`
-
-    const curDate = new Date(Date.now())
-    const curTS = curDate.getUTCFullYear() + '-' + (curDate.getUTCMonth()+1) + '-' + curDate.getUTCDate() + ' ' + curDate.getUTCHours() + ':' + curDate.getMinutes() + ':' + curDate.getSeconds()
-    if (contest.contestName == '') {
-        return res.send([false, 'Contest name cannot be empty!'])
-    } else if (contest.endDate <= contest.startDate) {
-        return res.send([false, 'end time before start time!'])
-    } else if (contest.startDate < curTS) {
-        return res.send([false, 'start time is before current time!'])
-    }
-
+                       VALUES('${contest.contestName}', '${contest.startDate}', '${contest.endDate}') RETURNING contest_id`
 
     client.query(insertQuery, (err, result)=>{
         if(!err){
-            res.send([true, 'Contest added successfully!'])
+            res.send([true, result['rows'][0]['contest_id']])
         }
         else{ 
             res.send([false, err.message])

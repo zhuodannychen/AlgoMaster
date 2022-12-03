@@ -18,6 +18,7 @@ function Contests() {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(1);
 
+<<<<<<< HEAD
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
 
@@ -25,21 +26,28 @@ function Contests() {
   const slicedPastContests = pastContests.slice(indexOfFirstRecord, indexOfLastRecord)
   const nPages = Math.ceil((displayContests == "current" ? futureContests.length : pastContests.length) / recordsPerPage)
   
+=======
+  const zeroPad = (num, places) => String(num).padStart(places, '0')
+
+  // implementation of upper bound
+>>>>>>> 285154a4c56871e9288edc4b3678b46795639043
   const contestSplit = (contests) => {
     let low = 0
-    let high = contests.length-1
+    let high = contests.length
     const curDate = new Date(Date.now())
-    const curTS = curDate.getUTCFullYear() + '-' + (curDate.getUTCMonth()+1) + '-' + curDate.getUTCDate() + ' ' + curDate.getUTCHours() + ':' + curDate.getMinutes() + ':' + curDate.getSeconds()
-    console.log(curTS)
-    console.log(contests)
+    const curTS = curDate.getUTCFullYear() + '-' + zeroPad((curDate.getUTCMonth()+1), 2) + '-' + zeroPad(curDate.getUTCDate(), 2) + ' ' + zeroPad(curDate.getUTCHours(), 2) + ':' + zeroPad(curDate.getMinutes(), 2) + ':' + zeroPad(2, curDate.getSeconds())
 
     while (low < high) {
-        let mid = low + Math.floor((high - low + 1) / 2)
-        if (curTS < contests[mid]['end_date'])
-            high = mid - 1;
+        let mid = low + Math.floor((high - low) / 2)
+        if (curTS >= contests[mid]['end_date'])
+            low = mid + 1
         else
-            low = mid
+            high = mid
     }
+
+    if (low < contests.length && contests[low] <= curTS)
+        low++
+
     return low
   }
 
