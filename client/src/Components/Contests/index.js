@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../Navbar';
+import Navbar from '../Utilities/Navbar';
 import Contest from './Contest';
 import image from "../../Assets/images/background.jpg"
 import Axios from 'axios'

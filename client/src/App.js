@@ -5,8 +5,6 @@ import CreateContest from './Components/Contests/CreateContest'
 import Profile from './Components/Profile'
 import Comments from './Components/Contests/Comments'
 import './App.css'
-import ProtectedRoute from './Components/ProtectedRoute'
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 
