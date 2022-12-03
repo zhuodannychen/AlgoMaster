@@ -2,7 +2,7 @@ import React from 'react'
 import { faUser } from "@fortawesome/free-solid-svg-icons" 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useNavigate } from 'react-router-dom'
-import "../App"
+import "../../App"
 
 export default function Navbar(){
   const navigate = useNavigate();
