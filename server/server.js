@@ -73,6 +73,22 @@ app.post('/users', (req, res)=> {
     client.end;
 })
 
+app.post('/users/:id', (req, res)=> {
+    const user = req.body;
+    const updateQuery = `UPDATE users SET isadmin = true WHERE user_id = ${req.params.id}`
+
+    client.query(updateQuery, (err, result)=>{
+        if(!err){
+            res.send([true, 'admin added'])
+        }
+        else{ 
+            res.send([false, err.message])
+            console.log(err.message)
+        }
+    })
+    client.end;
+})
+
 app.delete('/users/:id', (req, res)=> {
     const insertQuery = `DELETE FROM users WHERE user_id=${req.params.id}`
 
