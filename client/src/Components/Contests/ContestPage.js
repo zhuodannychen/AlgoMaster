@@ -31,6 +31,11 @@ function ContestPage(props){
         <h1>Contest Page for {contestid}</h1>
         {problems.map((problem, idx) => <li key={idx}>{problem['problem_name']} {problem['problem_desc']} {problem['problem_url']}</li>)}
         <p>Comments</p>
+        {comments.map((comment, idx) => 
+          <li key={idx}>
+            {comment['comment_desc']}
+          </li>
+        )}
         <div class="mb-3">
           <label for="Comment" class="form-label">Comment</label>
           <textarea class="form-control" id="Comment" rows="3"></textarea>
