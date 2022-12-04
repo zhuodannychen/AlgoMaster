@@ -73,6 +73,22 @@ app.post('/users', (req, res)=> {
     client.end;
 })
 
+app.post('/users/:id', (req, res)=> {
+    const user = req.body;
+    const updateQuery = `UPDATE users SET isadmin = true WHERE user_id = ${req.params.id}`
+
+    client.query(updateQuery, (err, result)=>{
+        if(!err){
+            res.send([true, 'admin added'])
+        }
+        else{ 
+            res.send([false, err.message])
+            console.log(err.message)
+        }
+    })
+    client.end;
+})
+
 app.delete('/users/:id', (req, res)=> {
     const insertQuery = `DELETE FROM users WHERE user_id=${req.params.id}`
 
@@ -156,7 +172,7 @@ app.get('/contests', (req, res) => {
 })
 
 app.get('/contests/:id', (req, res)=>{
-    client.query(`Select * FROM contests WHERE contest_id=${req.params.id}`, (err, result)=>{
+    client.query(`SELECT * FROM contests WHERE contest_id=${req.params.id}`, (err, result)=>{
         if(!err){
             res.send(result.rows);
         }
@@ -178,6 +194,7 @@ app.post('/contests', (req, res)=> {
             console.log(err.message)
         }
     })
+
     client.end;
 })
 
@@ -200,6 +217,31 @@ app.post('/login', (req, res)=> {
         else{ 
             res.send([false, 'Wrong username or password.', result.username, result.isadmin])
             console.log('Wrong username or password.')
+        }
+    })
+    client.end;
+})
+
+app.post('/add_user_contest', (req, res)=> {
+    const username = req.body.username
+    const contest_id = req.body.contest_id
+    // INSERT INTO user_contest (user_id, contest_id) VALUES ((SELECT user_id FROM users WHERE username = 'admin'), contest_id)
+    // need to find id with username first
+
+    const query = `INSERT INTO user_contest (user_id, contest_id) VALUES ((SELECT user_id FROM users WHERE username = '${username}'), ${contest_id}) ON CONFLICT (user_id, contest_id) DO NOTHING`
+
+    client.query(query, (err, result)=>{
+        if(err){
+            res.send(err.message)
+        }
+
+        console.log(result)
+        if (result.rowCount > 0) {
+            res.send([true, 'success!'])
+        }
+        else{ 
+            res.send([false, err])
+            console.log(err)
         }
     })
     client.end;
