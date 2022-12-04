@@ -18,7 +18,6 @@ function Contests() {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(1);
 
-<<<<<<< HEAD
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
 
@@ -26,11 +25,9 @@ function Contests() {
   const slicedPastContests = pastContests.slice(indexOfFirstRecord, indexOfLastRecord)
   const nPages = Math.ceil((displayContests == "current" ? futureContests.length : pastContests.length) / recordsPerPage)
   
-=======
   const zeroPad = (num, places) => String(num).padStart(places, '0')
 
   // implementation of upper bound
->>>>>>> 285154a4c56871e9288edc4b3678b46795639043
   const contestSplit = (contests) => {
     let low = 0
     let high = contests.length
