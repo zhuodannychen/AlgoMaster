@@ -7,6 +7,7 @@ import "../../App.css"
 function ContestPage(props){
   const [username, setUsername] = useState("");
   const [problems, setProblems] = useState([]);
+  const [comments, setComments] = useState([]);
   const {contestid} = useParams();
 
   useEffect(() => {
@@ -22,6 +23,8 @@ function ContestPage(props){
         <h1>Contest Page for {contestid}</h1>
         {console.log(problems)}
         {problems.map((problem, idx) => <li key={idx}>{problem['problem_name']} {problem['problem_desc']} {problem['problem_url']}</li>)}
+        {comments.map((comment, idx) => <li key={idx}>{comment['comment_desc']}</li>)}
+        <p>Comments</p>
         <div class="mb-3">
           <label for="Comment" class="form-label">Comment</label>
           <textarea class="form-control" id="Comment" rows="3"></textarea>
