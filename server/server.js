@@ -247,6 +247,19 @@ app.post('/add_user_contest', (req, res)=> {
     client.end;
 })
 
+app.get('/contestdetails/:id', (req, res)=> {
+    const contestid = req.params.id
+    const selectProblems = `SELECT problem_name, problem_desc, problem_url FROM contest_problem JOIN problems ON contest_problem.problem_id=problems.problem_id WHERE contest_id = ${contestid}`
+
+    client.query(selectProblems, (err, result)=>{
+        if(err){
+            res.send(err.message)
+        } else {
+            res.send([true, result.rows])
+        }
+    })
+    client.end;
+})
 
 const port = process.env.PORT || 3001; //Line 3
 // This displays message that the server running and listening to specified port
