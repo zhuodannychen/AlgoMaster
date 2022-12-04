@@ -5,8 +5,11 @@ import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import image from '../Assets/images/background.jpg'
 import Axios from 'axios'
 import '../App.css';
+import { useDispatch } from 'react-redux';
+// import { updateIsAdmin, updateUserName } from '../redux/reducers/userReducer';
 
 function Login() {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const [usernameLog, setUsernameLog] = useState("")
   const [passwordLog, setPasswordLog] = useState("")
@@ -30,8 +33,11 @@ function Login() {
         setLogStatus(response.data[1])
         if (response.data[0]) {
             // loggedInUser = true
-            localStorage.setItem("authenticated", JSON.stringify(true));
-            navigate("/contests");
+            localStorage.setItem("authenticated", JSON.stringify(true))
+            navigate("/contests")
+
+            // dispatch(updateUserName(response.data[2]))
+            // dispatch(updateIsAdmin(response.data[3]))
         }
     })
   }
