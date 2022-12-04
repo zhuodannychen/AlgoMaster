@@ -1,5 +1,6 @@
 import Axios from 'axios'
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import "../../App.css"
 
 
@@ -103,7 +104,7 @@ function Contest(props){
             <span id="duration"> {getContestDuration(props.start_date, props.end_date)} hours </span>
             <span id="participants"> {props.participants} participants </span>
             {checkContestStarted(props.start_date) ? 
-            <button className="btn btn-outline-success" onClick={() => addUserToContest(username, props.contest_id)} style={{textColor: 'green'}} type='button'> Enter </button>
+            <Link to={`/contests/${props.contest_id}`} className="btn btn-outline-success" style={{textColor: 'green'}} type='button'> Enter </Link>
             :
             <button className="btn btn-outline-success" onClick={() => addUserToContest(username, props.contest_id)} style={{textColor: 'green'}} type='button'> Sign Up </button>
             }
