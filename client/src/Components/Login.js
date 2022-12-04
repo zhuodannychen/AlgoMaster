@@ -31,6 +31,7 @@ function Login() {
         if (response.data[0]) {
             // loggedInUser = true
             localStorage.setItem("authenticated", JSON.stringify(true));
+            localStorage.setItem("username", JSON.stringify(usernameLog));
             navigate("/contests");
         }
     })

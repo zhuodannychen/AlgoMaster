@@ -61,6 +61,7 @@ function Contests() {
     })
   }, [])
 
+
   return (
     <React.Fragment>
       <Navbar />
@@ -73,8 +74,8 @@ function Contests() {
             <option selected value="current"> Current / Incoming </option>
             <option value="past"> Past Events </option>
           </select>
-          { displayContests == "current" ? slicedFutureContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} />)
-          : slicedPastContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} />)}
+          { displayContests == "current" ? slicedFutureContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} contest_id={arr['contest_id']} />)
+          : slicedPastContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} contest_id={arr['contest_id']} />)}
           <Pagination nPages={nPages} currentPage={currentPage} setCurrentPage={ setCurrentPage }/>
       </div>
     </div>
