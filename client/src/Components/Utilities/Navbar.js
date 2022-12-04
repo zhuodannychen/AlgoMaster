@@ -2,10 +2,14 @@ import React from 'react'
 import { faUser } from "@fortawesome/free-solid-svg-icons" 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import "../../App"
 
 export default function Navbar(){
   const navigate = useNavigate();
+  const state = useSelector((state) => state)
+  console.log(state)
+
   return (
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div className='container'>
@@ -28,7 +32,7 @@ export default function Navbar(){
           </ul>
           <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
             <li class="nav-item" onClick={() => navigate("/profile")}>
-              <a class="nav-link" href="#"> <FontAwesomeIcon icon={faUser}/> Profile</a>
+              <a class="nav-link" href="#"> <FontAwesomeIcon icon={faUser}/>  </a>
             </li>
           </ul>
         </div>
