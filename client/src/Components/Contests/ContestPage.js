@@ -17,13 +17,19 @@ function ContestPage(props){
     })
   }, []);
 
+  useEffect(() => {
+    Axios.get('http://localhost:3001/comments/'+contestid)
+    .then(response => {
+        console.log("Comments: ", response.data)
+        setComments(response.data)
+    })
+  }, []);
+
 
   return (
     <div class="container">
         <h1>Contest Page for {contestid}</h1>
-        {console.log(problems)}
         {problems.map((problem, idx) => <li key={idx}>{problem['problem_name']} {problem['problem_desc']} {problem['problem_url']}</li>)}
-        {comments.map((comment, idx) => <li key={idx}>{comment['comment_desc']}</li>)}
         <p>Comments</p>
         <div class="mb-3">
           <label for="Comment" class="form-label">Comment</label>
