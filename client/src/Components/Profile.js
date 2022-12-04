@@ -9,6 +9,7 @@ import '../App.css';
 function Profile() {
     const navigate = useNavigate()
     const [authenticated, setauthenticated] = useState(null);
+    const [username, setUsername] = useState("");
     const [users, setUsers] = useState([]) // includes past contests
     const [admins, setAdmins] = useState([]) // includes present and future contests
     const [displayUsers, setDisplayUsers] = useState("users")
@@ -25,9 +26,11 @@ function Profile() {
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem("authenticated"))
+        const username = JSON.parse(localStorage.getItem("username"))
         console.log(loggedInUser)
         if (loggedInUser) {
             setauthenticated(loggedInUser);
+            setUsername(username);
         } else {
             navigate("/");
         }
@@ -46,6 +49,7 @@ function Profile() {
 
     const logout = () => {
         localStorage.setItem("authenticated", JSON.stringify(false));
+        localStorage.setItem("username", JSON.stringify(""));
         navigate("/"); // back to login page
     }
 
@@ -67,31 +71,10 @@ function Profile() {
             Axios.post("http://localhost:3001/users/" + user_id)
          }
     }
-    
-    // const displayName = () => {
-    //     Axios.post("http://localhost:3001/users", {
-    //         firstname: firstName,
-    //         lastname: lastName,
-    //         username: usernameReg,
-    //         password: passwordReg,
-    //     }).then((response) => {
-    //         setRegStatus(response.data[0])
-    
-    //         if (response.data[0]){
-    //           alert('Account created successfully!')
-    //           navigate("/");
-    //         } else {
-    //           alert(response.data[1])
-    //         }
-    //     })
-    // } 
-
-
-
 
     return (
-        <div>
-            <p>Welcome to your Dashboard</p>
+        <div className="container">
+            <p>Welcome {username}</p>
             <button onClick={logout}>Log out</button>
 
             <select className="form-select mb-3" onChange={(e) => setDisplayUsers(e.target.value)}>
