@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import Pagination from "./Utilities/Pagination"
 import Axios from 'axios'
@@ -72,10 +72,27 @@ function Profile() {
          }
     }
 
+    const cardStyle = {
+      marginBottom: "25px",
+      width: "1000px"
+    }
+
+    const logooutButtonStyle = {
+      margin: "25px 0px 25px 0px"
+    }
+
+    const listWithoutButtonStyle = {
+      listStyleType: "none"
+    }
+
+    const iconButtonStyle = {
+      margin: "10px 10px 10px 10px"
+    }
+
     return (
         <div className="container">
-            <p>Welcome {username}</p>
-            <button onClick={logout}>Log out</button>
+            <h1 class="display-6">Welcome {username}</h1>
+            <button style={logooutButtonStyle} onClick={logout}>Log out</button>
 
             <select className="form-select mb-3" onChange={(e) => setDisplayUsers(e.target.value)}>
                 <option selected value="users"> Users </option>
@@ -83,17 +100,25 @@ function Profile() {
             </select>
 
             { displayUsers == "users" ? slicedUsers.map((users) => 
-            <li key={users['user_id']}>
-                <h6>Username: {users['username']}</h6>
-                <h6>{users['firstname']} {users['lastname']}</h6>
-                <FontAwesomeIcon className='pointerOnHover' icon={faTrash} onClick={() => deleteUser(users['user_id'])} />
-                <FontAwesomeIcon className='pointerOnHover' icon={faPlus} onClick={() => makeAdmin(users['user_id'])} />
+            <li key={users['user_id']} style={listWithoutButtonStyle}>
+              <div class="card m-2" style={cardStyle}>
+                <div class="card-body">
+                  <h3 class="card-title">Username: {users['username']}</h3>
+                  <h4 class="card-subtitle text-muted">{users['firstname']} {users['lastname']}</h4>
+                  <FontAwesomeIcon className='pointerOnHover fa-lg' style={iconButtonStyle} icon={faTrash} onClick={() => deleteUser(users['user_id'])} />
+                  <FontAwesomeIcon className='pointerOnHover fa-lg' style={iconButtonStyle} icon={faPlus} onClick={() => makeAdmin(users['user_id'])} />
+                </div>
+              </div>
             </li>
             )
             : slicedAdmins.map((admins) => 
-            <li key={admins['user_id']}>
-                <h6>Username: {admins['username']}</h6>
-                <h6>{admins['firstname']} {admins['lastname']}</h6>
+            <li key={admins['user_id']} style={listWithoutButtonStyle}>
+              <div class="card m-2" style={cardStyle}>
+                <div class="card-body">
+                  <h3 class="card-title">Username: {admins['username']}</h3>
+                  <h4 class="card-subtitle text-muted">{admins['firstname']} {admins['lastname']}</h4>
+                </div>
+              </div>
             </li>
             )}
 
