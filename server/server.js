@@ -159,7 +159,15 @@ app.delete('/problems/:id', (req, res)=> {
     client.end;
 })
 
-
+// ################ COMMENTS ###############
+app.get('/comments/:contest_id', (req, res)=>{
+  client.query(`SELECT * FROM comments WHERE contest_id=${req.params.contest_id}`, (err, result)=>{
+      if(!err){
+          res.send(result.rows);
+      }
+  });
+  client.end;
+})
 
 // ################ CONTESTS ###############
 app.get('/contests', (req, res) => {
