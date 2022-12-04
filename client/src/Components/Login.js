@@ -33,17 +33,9 @@ function Login() {
         setLogStatus(response.data[1])
         if (response.data[0]) {
             // loggedInUser = true
-<<<<<<< HEAD
-            localStorage.setItem("authenticated", JSON.stringify(true))
-            navigate("/contests")
-
-            // dispatch(updateUserName(response.data[2]))
-            // dispatch(updateIsAdmin(response.data[3]))
-=======
             localStorage.setItem("authenticated", JSON.stringify(true));
             localStorage.setItem("username", JSON.stringify(usernameLog));
             navigate("/contests");
->>>>>>> a765b7dd81bb2470a6f54c7deb8ed8fd3b391b10
         }
     })
   }
