@@ -6,6 +6,7 @@ import image from '../Assets/images/background.jpg'
 import Axios from 'axios'
 import '../App.css';
 import { useDispatch } from 'react-redux';
+import { updateUserName, updateIsAdmin } from "../redux/reducers/userReducer"
 // import { updateIsAdmin, updateUserName } from '../redux/reducers/userReducer';
 
 function Login() {
@@ -34,12 +35,16 @@ function Login() {
         if (response.data[0]) {
             // loggedInUser = true
             localStorage.setItem("authenticated", JSON.stringify(true));
-            localStorage.setItem("username", JSON.stringify(usernameLog));
+            dispatch(updateUserName({username: response.data[2]}))
+            dispatch(updateIsAdmin({isAdmin: response.data[3]}))
             navigate("/contests");
         }
     })
   }
-
+const addTodoAction = {
+  type: 'todos/todoAdded',
+  payload: 'Buy milk'
+}
     return (
         <div className='flex-container' style={{ backgroundImage: `url(${image})`}}>
         <div className="Login card">

@@ -6,15 +6,15 @@ export const userSlice = createSlice({
     username: "admin",
     isAdmin: false
   },
-  // reducers: {
-  //   updateUserName: (state, action) => {
-  //     state.username = action.username
-  //   },
-  //   updateIsAdmin: (state, action) => {
-  //     state.isAdmin = action.isAdmin
-  //   }
-  // }
+  reducers: {
+    updateUserName: (state, action) => {
+      console.log(action)
+      state.username = action.payload.username
+    },
+    updateIsAdmin: (state, action) => {
+      state.isAdmin = action.payload.isAdmin
+    }
+  }
 })
-
-//export const { updateUserName, updateIsAdmin } = userSlice.actions
+export const { updateUserName, updateIsAdmin } = userSlice.actions
 export default userSlice.reducer

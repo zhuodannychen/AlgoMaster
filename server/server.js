@@ -212,10 +212,10 @@ app.post('/login', (req, res)=> {
 
         console.log(result)
         if (result.rowCount > 0) {
-            res.send([true, 'Login success!', result.username, result.isadmin])
+            res.send([true, 'Login success!', result.rows[0].username, result.rows[0].isadmin])
         }
         else{ 
-            res.send([false, 'Wrong username or password.', result.username, result.isadmin])
+            res.send([false, 'Wrong username or password.'])
             console.log('Wrong username or password.')
         }
     })
