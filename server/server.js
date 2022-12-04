@@ -89,10 +89,12 @@ app.post('/users/:id', (req, res)=> {
     client.end;
 })
 
-app.delete('/users/:id', (req, res)=> {
-    const insertQuery = `DELETE FROM users WHERE user_id=${req.params.id}`
+app.delete('/users/:id', async (req, res)=> {
+    const deleteUserContest= `DELETE FROM user_contest WHERE user_id=${req.params.id}`
+    const result = await client.query(deleteUserContest)
+    const deleteUsers = `DELETE FROM users WHERE user_id=${req.params.id}`
 
-    client.query(insertQuery, (err, result)=>{
+    client.query(deleteUsers, (err, result)=>{
         if(!err){
             res.send('Deletion was successful')
         }

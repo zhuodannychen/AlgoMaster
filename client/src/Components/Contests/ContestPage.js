@@ -21,7 +21,7 @@ function ContestPage(props){
     <div class="container">
         <h1>Contest Page for {contestid}</h1>
         {console.log(problems)}
-        {problems.map((problem, idx) => <li key={idx}>{problem['problem_name']} {problem['problem_desc']} {problem['problem_url']}</li>)}
+        {problems.map((problem, idx) => <li key={idx}><a href={problem['problem_url']}>{problem['problem_name']}</a> {problem['problem_desc']}</li>)}
     </div>
   )
 
