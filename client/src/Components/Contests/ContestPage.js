@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from "@fortawesome/free-solid-svg-icons" 
 import Axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
@@ -25,6 +27,21 @@ function ContestPage(props){
     })
   }, []);
 
+  const cardStyle = {
+    marginBottom: "25px"
+  }
+
+  const listWithoutButtonStyle = {
+    listStyleType: "none"
+  }
+
+  const iconSpacingStyle = {
+    marginRight: "10px"
+  }
+
+  const paragraphMarginStyle = {
+    margin: "10px 0px 10px 0px"
+  }
 
   return (
     <div class="container">
@@ -32,8 +49,15 @@ function ContestPage(props){
         {problems.map((problem, idx) => <li key={idx}>{problem['problem_name']} {problem['problem_desc']} {problem['problem_url']}</li>)}
         <p>Comments</p>
         {comments.map((comment, idx) => 
-          <li key={idx}>
-            {comment['comment_desc']}
+          <li key={idx} style={listWithoutButtonStyle}>
+            <div class="card m-2" style={cardStyle}>
+              <div class="card-body">
+                <FontAwesomeIcon icon={faUser} style={iconSpacingStyle}/>
+                <span class="card-title">{comment['username']}</span>
+                <p class="card-subtitle text-muted" style={paragraphMarginStyle}>{comment['comment_desc']}</p>
+              </div>
+            </div>
+            
           </li>
         )}
         <div class="mb-3">
