@@ -7,7 +7,7 @@ import "../../App"
 
 export default function Navbar(){
   const navigate = useNavigate();
-  const username = useSelector((state) => state.user.username)
+  const username = localStorage.getItem('username') // useSelector((state) => state.user.username)
  
   return (
     <nav class="navbar navbar-expand-lg navbar-light bg-light">

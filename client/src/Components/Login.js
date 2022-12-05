@@ -35,6 +35,8 @@ function Login() {
         if (response.data[0]) {
             // loggedInUser = true
             localStorage.setItem("authenticated", JSON.stringify(true));
+            localStorage.setItem("username", JSON.stringify(response.data[2]));
+            localStorage.setItem("isAdmin", JSON.stringify(response.data[3]));
             dispatch(updateUserName({username: response.data[2]}))
             dispatch(updateIsAdmin({isAdmin: response.data[3]}))
             navigate("/contests");

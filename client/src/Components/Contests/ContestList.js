@@ -13,6 +13,8 @@ import { useSelector } from 'react-redux';
 
 function Contests() {
   const navigate = useNavigate()
+  const [username, setUsername] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(null);
   const [pastContests, setPastContests] = useState([]) // includes past contests
   const [futureContests, setFutureContests] = useState([]) // includes present and future contests
   const [displayContests, setDisplayContests] = useState("current")
@@ -27,7 +29,6 @@ function Contests() {
   const nPages = Math.ceil((displayContests == "current" ? futureContests.length : pastContests.length) / recordsPerPage)
   
   const zeroPad = (num, places) => String(num).padStart(places, '0')
-  const isAdmin = useSelector(state => state.user.isAdmin)
 
   // implementation of upper bound
   const contestSplit = (contests) => {
@@ -61,6 +62,11 @@ function Contests() {
         setFutureContests(future)
         setPastContests(past.reverse())
     })
+    const username = JSON.parse(localStorage.getItem('username')) // useSelector(state => state.user.username);
+    const isAdmin = JSON.parse(localStorage.getItem('isAdmin')) // useSelector(state => state.user.isAdmin)
+
+    setUsername(username)
+    setIsAdmin(isAdmin)
   }, [])
 
 
