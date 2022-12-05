@@ -161,11 +161,11 @@ app.delete('/problems/:id', (req, res)=> {
 
 // ################ COMMENTS ###############
 app.get('/comments/:contest_id', (req, res)=>{
-  client.query(`SELECT * FROM comments WHERE contest_id=${req.params.contest_id}`, (err, result)=>{
-      if(!err){
-          res.send(result.rows);
-      }
-  });
+  client.query(`select * from comments inner join users on comments.user_id = users.user_id and comments.contest_id=${req.params.contest_id};`, (err, result)=>{
+    if(!err){
+        res.send(result.rows);
+    }
+})
   client.end;
 })
 
