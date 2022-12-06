@@ -169,6 +169,24 @@ app.get('/comments/:contest_id', (req, res)=>{
   client.end;
 })
 
+app.post('/comments', (req, res)=> {
+  const user_id = req.body.user_id;
+  const contest_id = req.body.contest_id;
+  const comment_desc = req.body.comment_desc;
+
+  const query = `INSERT INTO comments(user_id, contest_id, comment_desc) VALUES(${user_id}, ${contest_id}, '${comment_desc}') RETURNING comment_id`
+  client.query(query, (err, result)=>{
+    if(!err){
+      res.send([true, result['rows'][0]['comment_id']])
+    }
+    else{ 
+        res.send([false, err.message])
+        console.log(err.message)
+    }
+  })
+  client.end;
+})
+
 // ################ CONTESTS ###############
 app.get('/contests', (req, res) => {
     client.query(`SELECT * FROM contests ORDER BY start_date`, (err, result) => {
