@@ -38,22 +38,29 @@ function ContestPage(props){
   }
 
   const addContest = async () => {
-    const username = JSON.parse(localStorage.getItem("username"))
-    Axios.get('http://localhost:3001/user/'+username)
-    .then(response => {
-      setUserId(response.data['user_id'])
-      console.log("User id = ", userId)
-    })
-    Axios.post("http://localhost:3001/comments", {
-    user_id: userId,
-    contest_id: contestid,
-    comment_desc: comment 
-    }).then((response) => {
-      if (response.data[0]) {
-        console.log('Comment added!')
-        updateComments()
-      }
-    })
+    if (comment == "") {
+      alert("Please enter a comment")
+    } 
+    else
+    {
+      const username = JSON.parse(localStorage.getItem("username"))
+      console.log("username = ", username)
+      Axios.get('http://localhost:3001/user/'+username)
+      .then(response => {
+        setUserId(response.data[0]['user_id'])
+        console.log("userid = ", response.data[0]['user_id'])
+      })
+      Axios.post("http://localhost:3001/comments", {
+      user_id: userId,
+      contest_id: contestid,
+      comment_desc: comment 
+      }).then((response) => {
+        if (response.data[0]) {
+          console.log('Comment added!')
+          updateComments()
+        }
+      })
+    }
   }
 
   const cardStyle = {
