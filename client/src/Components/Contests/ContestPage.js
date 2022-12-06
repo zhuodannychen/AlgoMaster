@@ -7,7 +7,7 @@ import "../../App.css"
 
 
 function ContestPage(props){
-  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState(0);
   const [comment, setComment] = useState("");
   const [problems, setProblems] = useState([]);
   const [comments, setComments] = useState([]);
@@ -38,8 +38,14 @@ function ContestPage(props){
   }
 
   const addContest = async () => {
+    const username = JSON.parse(localStorage.getItem("username"))
+    Axios.get('http://localhost:3001/user/'+username)
+    .then(response => {
+      setUserId(response.data['user_id'])
+      console.log("User id = ", userId)
+    })
     Axios.post("http://localhost:3001/comments", {
-    user_id: 32,
+    user_id: userId,
     contest_id: contestid,
     comment_desc: comment 
     }).then((response) => {
