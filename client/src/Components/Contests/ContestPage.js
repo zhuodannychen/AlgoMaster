@@ -28,6 +28,28 @@ function ContestPage(props){
     })
   }, []);
 
+  const updateComments = () => {
+    Axios.get('http://localhost:3001/comments/'+contestid)
+    .then(response => {
+        console.log("Comments: ", response.data)
+        setComments(response.data)
+        setComment("")
+    })
+  }
+
+  const addContest = async () => {
+    Axios.post("http://localhost:3001/comments", {
+    user_id: 32,
+    contest_id: contestid,
+    comment_desc: comment 
+    }).then((response) => {
+      if (response.data[0]) {
+        console.log('Comment added!')
+        updateComments()
+      }
+    })
+  }
+
   const cardStyle = {
     marginBottom: "25px"
   }
@@ -63,9 +85,9 @@ function ContestPage(props){
         )}
         <div class="mb-3">
           <label for="Comment" class="form-label">Comment</label>
-          <textarea class="form-control" id="Comment" rows="3" onChange={e => {setComment(e.target)}}></textarea>
+          <textarea class="form-control" id="Comment" rows="3" value={comment} onChange={e => {setComment(e.target.value)}}></textarea>
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <button class="btn btn-primary me-md-2" type="button" style={paragraphMarginStyle}>Submit</button>
+            <button class="btn btn-primary me-md-2" type="button" style={paragraphMarginStyle} onClick={addContest}>Submit</button>
           </div>
         </div>
     </div>
