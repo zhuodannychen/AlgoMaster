@@ -8,6 +8,7 @@ import "../../App.css"
 
 function ContestPage(props){
   const [username, setUsername] = useState("");
+  const [comment, setComment] = useState("");
   const [problems, setProblems] = useState([]);
   const [comments, setComments] = useState([]);
   const {contestid} = useParams();
@@ -62,7 +63,10 @@ function ContestPage(props){
         )}
         <div class="mb-3">
           <label for="Comment" class="form-label">Comment</label>
-          <textarea class="form-control" id="Comment" rows="3"></textarea>
+          <textarea class="form-control" id="Comment" rows="3" onChange={e => {setComment(e.target)}}></textarea>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-primary me-md-2" type="button" style={paragraphMarginStyle}>Submit</button>
+          </div>
         </div>
     </div>
   )
