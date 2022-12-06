@@ -39,6 +39,15 @@ app.get('/users', (req, res) => {
     client.end;
 })
 
+app.get('/user/:username', (req, res) => {
+  client.query(`Select (user_id) FROM users WHERE username='${req.params.username}'`, (err, result) => {
+    if(!err) {
+      res.send(result.rows);
+    }
+  });
+  client.end;
+})
+
 app.get('/users/:id', (req, res)=>{
     client.query(`Select * FROM users WHERE user_id=${req.params.id}`, (err, result)=>{
         if(!err){
