@@ -70,7 +70,7 @@ function Profile() {
     }
 
     const deleteUser = (user_id) => {
-        if (window.confirm("Are you sure?") == true){
+        if (window.confirm("Are you sure you want to delete this user?") == true){
             const newUsers = users.filter(user => user['user_id'] !== user_id)
             setUsers(newUsers)
             Axios.delete("http://localhost:3001/users/" + user_id)
@@ -78,7 +78,7 @@ function Profile() {
     }
 
     const makeAdmin = (user_id) => {
-        if (window.confirm("Are you sure?") == true){
+        if (window.confirm("Are you sure you want to make this user admin?") == true){
             const newUsers = users.filter(user => user['user_id'] !== user_id)
             const newAdmin = users.filter(user => user['user_id'] === user_id)
             const newAdmins = admins.concat(newAdmin)
@@ -142,8 +142,8 @@ function Profile() {
 
           <Pagination nPages={nPages} currentPage={currentPage} setCurrentPage={ setCurrentPage }/>
           </div>
-          : <h1></h1>
-            }
+          : <h1></h1>}
+          <h2>Contests Signed Up</h2>
             {userContests.map((arr) => <Contest key={arr['contest_id']}
                                                 name={arr['contest_name']}
                                                 start_date={arr['start_date']}

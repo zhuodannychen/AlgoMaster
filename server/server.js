@@ -2,9 +2,11 @@ const express = require('express'); //Line 1
 const cors = require('cors')
 const bodyParser = require('body-parser');
 const { Client } = require('pg')
+const bcrypt = require('bcrypt');
 
 // const users = require("./routes/users")
 // const contests = require("./routes/contests")
+
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
@@ -24,6 +26,14 @@ const client = new Client({
 })
 
 client.connect()
+
+const hashRounds = 10;
+const hashPassword = async (password, rounds) => {
+    const hash = await bcrypt.hash(password, rounds)
+    // console.log(hash)
+    return hash
+}
+
 
 // use these routes
 // app.use("/users", users)
@@ -48,10 +58,8 @@ app.get('/users/:id', (req, res)=>{
     client.end;
 })
 
-app.post('/users', (req, res)=> {
+app.post('/users', async (req, res)=> {
     const user = req.body;
-    const insertQuery = `INSERT INTO users(firstname, lastname, username, password, isadmin) 
-                       VALUES('${user.firstname}', '${user.lastname}', '${user.username}', '${user.password}', false)`
     
     if (user.firstname === '' || user.lastname === '') {
         return res.send([false, 'name field cannot be empty'])
@@ -61,7 +69,12 @@ app.post('/users', (req, res)=> {
         return res.send([false, 'password needs to be at least 8 characters long!'])
     }
 
-    client.query(insertQuery, (err, result)=>{
+    const hash = await hashPassword(user.password, hashRounds); // the higher the number, the more secure the hash, but also more computation time
+
+    const insertUser = `INSERT INTO users(firstname, lastname, username, password, isadmin) 
+                       VALUES('${user.firstname}', '${user.lastname}', '${user.username}', '${hash}', false)`
+
+    client.query(insertUser, (err, result)=>{
         if(!err){
             res.send([true, 'User registered successfully!'])
         }
@@ -91,7 +104,9 @@ app.post('/users/:id', (req, res)=> {
 
 app.delete('/users/:id', async (req, res)=> {
     const deleteUserContest= `DELETE FROM user_contest WHERE user_id=${req.params.id}`
-    const result = await client.query(deleteUserContest)
+    await client.query(deleteUserContest)
+    const deleteUserComment = `DELETE FROM comments WHERE user_id=${req.params.id}`
+    await client.query(deleteUserComment)
     const deleteUsers = `DELETE FROM users WHERE user_id=${req.params.id}`
 
     client.query(deleteUsers, (err, result)=>{
@@ -217,11 +232,11 @@ app.post('/contests', (req, res)=> {
 
 
 // ########## LOGIN ###########
-app.post('/login', (req, res)=> {
+app.post('/login', async (req, res)=> {
     const username = req.body.username;
     const password = req.body.password;
 
-    const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`
+    const query = `SELECT * FROM users WHERE username = '${username}'`
     client.query(query, (err, result)=>{
         if(err){
             res.send(err.message)
@@ -229,7 +244,16 @@ app.post('/login', (req, res)=> {
 
         console.log(result)
         if (result.rowCount > 0) {
-            res.send([true, 'Login success!', result.rows[0].username, result.rows[0].isadmin])
+            bcrypt.compare(password, result.rows[0].password, (err, isMatch) => {
+                if (err) {
+                    res.send(err.message)
+                } else if (isMatch) {
+                    res.send([true, 'Login success!', result.rows[0].username, result.rows[0].isadmin])
+                } else {
+                    res.send([false, 'Wrong username or password.'])
+                }
+            })
+            // res.send([true, 'Login success!', result.rows[0].username, result.rows[0].isadmin])
         }
         else{ 
             res.send([false, 'Wrong username or password.'])
