@@ -5,6 +5,7 @@ import Axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus , faTrash, faPenToSquare, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
+import Contest from "./Contests/Contest"
 
 import '../App.css';
 
@@ -13,6 +14,7 @@ function Profile() {
     const [authenticated, setauthenticated] = useState(null);
     const [username, setUsername] = useState(null);
     const [isAdmin, setIsAdmin] = useState(null);
+    const [userContests, setUserContests] = useState([])
 
     const [users, setUsers] = useState([]) // includes past contests
     const [admins, setAdmins] = useState([]) // includes present and future contests
@@ -48,6 +50,14 @@ function Profile() {
             const newUsers = allUsers.filter(user => user['isadmin'] !== true)
             setUsers(newUsers)
             setAdmins(newAdmins)
+        })
+
+        Axios.get("http://localhost:3001/user_contests", {
+            params: {
+                username: username
+            }
+        }).then((response) => {
+            setUserContests(response.data)
         })
 
     }, []);
@@ -134,6 +144,11 @@ function Profile() {
           </div>
           : <h1></h1>
             }
+            {userContests.map((arr) => <Contest key={arr['contest_id']}
+                                                name={arr['contest_name']}
+                                                start_date={arr['start_date']}
+                                                end_date={arr['end_date']}
+                                                contest_id={arr['contest_id']} />)}
         </div>
     );
 }

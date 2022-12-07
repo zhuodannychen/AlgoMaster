@@ -182,6 +182,21 @@ app.get('/contests/:id', (req, res)=>{
     client.end;
 })
 
+app.get('/user_contests', (req, res)=>{
+    const username = req.query.username;
+    client.query(`SELECT contests.contest_id, contest_name, start_date, end_date FROM contests
+                    INNER JOIN user_contest
+                    ON contests.contest_id=user_contest.contest_id
+                    INNER JOIN users
+                    ON users.user_id=user_contest.user_id
+                    WHERE users.username='${username}'`, (err, result)=>{
+        if(!err){
+            res.send(result.rows);
+        }
+    });
+    client.end;
+})
+
 app.post('/contests', (req, res)=> {
     const contest = req.body;
     const insertQuery = `INSERT INTO contests (contest_name, start_date, end_date) 
