@@ -9,10 +9,16 @@ import "../../App.css"
 function ContestPage(props){
   const [comment, setComment] = useState("");
   const [problems, setProblems] = useState([]);
+  const [contestName, setContestName] = useState("")
   const [comments, setComments] = useState([]);
   const {contestid} = useParams();
 
   useEffect(() => {
+    Axios.get('http://localhost:3001/contests/' + contestid)
+    .then(response => {
+        setContestName(response.data[0]['contest_name'])        
+    })
+
     Axios.get('http://localhost:3001/contestdetails/'+contestid)
     .then(response => {
         setProblems(response.data[1])
@@ -80,8 +86,10 @@ function ContestPage(props){
 
   return (
     <div class="container">
-        <h1>Contest Page for {contestid}</h1>
-        {problems.map((problem, idx) => <li key={idx}>{problem['problem_name']} {problem['problem_desc']} {problem['problem_url']}</li>)}
+        <h1>Contest Page for {contestName}</h1>
+        {console.log(problems)}
+        {problems.map((problem, idx) => <li key={idx}><a href={problem['problem_url']}>{problem['problem_name']}</a> {problem['problem_desc']}</li>)}
+        
         <p>Comments</p>
         {comments.map((comment, idx) => 
           <li key={idx} style={listWithoutButtonStyle}>

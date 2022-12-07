@@ -234,14 +234,12 @@ app.get('/contests/:id', (req, res)=>{
 
 app.get('/user_contests', (req, res)=>{
     const username = req.query.username;
-    client.query(`SELECT contests.contest_id, contest_name, start_date, end_date FROM contests
-                    INNER JOIN user_contest
-                    ON contests.contest_id=user_contest.contest_id
-                    INNER JOIN users
-                    ON users.user_id=user_contest.user_id
-                    WHERE users.username='${username}'`, (err, result)=>{
+    client.query(`SELECT contest_id, contest_name, start_date, end_date FROM UserContestView
+                    WHERE username='${username}'`, (err, result)=>{
         if(!err){
             res.send(result.rows);
+        } else {
+            console.log(err)
         }
     });
     client.end;
@@ -325,6 +323,8 @@ app.post('/add_user_contest', (req, res)=> {
 
 app.get('/contestdetails/:id', (req, res)=> {
     const contestid = req.params.id
+    // const getContestName = `DELETE FROM user_contest WHERE user_id=${req.params.id}`
+    // await client.query(deleteUserContest)
     const selectProblems = `SELECT problem_name, problem_desc, problem_url FROM contest_problem JOIN problems ON contest_problem.problem_id=problems.problem_id WHERE contest_id = ${contestid}`
 
     client.query(selectProblems, (err, result)=>{
