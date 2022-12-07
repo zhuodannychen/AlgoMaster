@@ -7,7 +7,6 @@ import "../../App.css"
 
 
 function ContestPage(props){
-  const [userId, setUserId] = useState(0);
   const [comment, setComment] = useState("");
   const [problems, setProblems] = useState([]);
   const [comments, setComments] = useState([]);
@@ -44,14 +43,14 @@ function ContestPage(props){
     else
     {
       const username = JSON.parse(localStorage.getItem("username"))
-      console.log("username = ", username)
-      Axios.get('http://localhost:3001/user/'+username)
+      let user_id;
+      console.log("username =", username)
+      await Axios.get('http://localhost:3001/user/'+username)
       .then(response => {
-        setUserId(response.data[0]['user_id'])
-        console.log("userid = ", response.data[0]['user_id'])
+        user_id = response.data[0]['user_id']
       })
       Axios.post("http://localhost:3001/comments", {
-      user_id: userId,
+      user_id: user_id,
       contest_id: contestid,
       comment_desc: comment 
       }).then((response) => {
