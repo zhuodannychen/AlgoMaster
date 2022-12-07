@@ -4,12 +4,18 @@ import Pagination from "./Utilities/Pagination"
 import Axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus , faTrash, faPenToSquare, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
+import Contest from "./Contests/Contest"
+
 import '../App.css';
 
 function Profile() {
     const navigate = useNavigate()
     const [authenticated, setauthenticated] = useState(null);
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(null);
+    const [userContests, setUserContests] = useState([])
+
     const [users, setUsers] = useState([]) // includes past contests
     const [admins, setAdmins] = useState([]) // includes present and future contests
     const [displayUsers, setDisplayUsers] = useState("users")
@@ -26,11 +32,12 @@ function Profile() {
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem("authenticated"))
-        const username = JSON.parse(localStorage.getItem("username"))
-        console.log(loggedInUser)
+        const username = JSON.parse(localStorage.getItem('username')) // useSelector(state => state.user.username);
+        const isAdmin = JSON.parse(localStorage.getItem('isAdmin')) // useSelector(state => state.user.isAdmin)
         if (loggedInUser) {
             setauthenticated(loggedInUser);
-            setUsername(username);
+            setUsername(username)
+            setIsAdmin(isAdmin)
         } else {
             navigate("/");
         }
@@ -45,16 +52,25 @@ function Profile() {
             setAdmins(newAdmins)
         })
 
+        Axios.get("http://localhost:3001/user_contests", {
+            params: {
+                username: username
+            }
+        }).then((response) => {
+            setUserContests(response.data)
+        })
+
     }, []);
 
     const logout = () => {
         localStorage.setItem("authenticated", JSON.stringify(false));
+        localStorage.setItem("isAdmin", JSON.stringify(false));
         localStorage.setItem("username", JSON.stringify(""));
         navigate("/"); // back to login page
     }
 
     const deleteUser = (user_id) => {
-        if (window.confirm("Are you sure?") == true){
+        if (window.confirm("Are you sure you want to delete this user?") == true){
             const newUsers = users.filter(user => user['user_id'] !== user_id)
             setUsers(newUsers)
             Axios.delete("http://localhost:3001/users/" + user_id)
@@ -62,7 +78,7 @@ function Profile() {
     }
 
     const makeAdmin = (user_id) => {
-        if (window.confirm("Are you sure?") == true){
+        if (window.confirm("Are you sure you want to make this user admin?") == true){
             const newUsers = users.filter(user => user['user_id'] !== user_id)
             const newAdmin = users.filter(user => user['user_id'] === user_id)
             const newAdmins = admins.concat(newAdmin)
@@ -94,6 +110,8 @@ function Profile() {
             <h1 class="display-6">Welcome {username}</h1>
             <button style={logooutButtonStyle} onClick={logout}>Log out</button>
 
+            {isAdmin ? 
+            <div>
             <select className="form-select mb-3" onChange={(e) => setDisplayUsers(e.target.value)}>
                 <option selected value="users"> Users </option>
                 <option value="admins"> Admins </option>
@@ -123,6 +141,14 @@ function Profile() {
             )}
 
           <Pagination nPages={nPages} currentPage={currentPage} setCurrentPage={ setCurrentPage }/>
+          </div>
+          : <h1></h1>}
+          <h2>Contests Signed Up</h2>
+            {userContests.map((arr) => <Contest key={arr['contest_id']}
+                                                name={arr['contest_name']}
+                                                start_date={arr['start_date']}
+                                                end_date={arr['end_date']}
+                                                contest_id={arr['contest_id']} />)}
         </div>
     );
 }

@@ -9,14 +9,17 @@ import Navbar from '../Utilities/Navbar'
 import Pagination from "../Utilities/Pagination"
 import { Link } from 'react-router-dom'
 import "../../App.css"
+import { useSelector } from 'react-redux';
 
 function Contests() {
   const navigate = useNavigate()
+  const [username, setUsername] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(null);
   const [pastContests, setPastContests] = useState([]) // includes past contests
   const [futureContests, setFutureContests] = useState([]) // includes present and future contests
   const [displayContests, setDisplayContests] = useState("current")
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(1);
+  const [recordsPerPage] = useState(10);
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
@@ -59,6 +62,11 @@ function Contests() {
         setFutureContests(future)
         setPastContests(past.reverse())
     })
+    const username = JSON.parse(localStorage.getItem('username')) // useSelector(state => state.user.username);
+    const isAdmin = JSON.parse(localStorage.getItem('isAdmin')) // useSelector(state => state.user.isAdmin)
+
+    setUsername(username)
+    setIsAdmin(isAdmin)
   }, [])
 
 
@@ -69,13 +77,13 @@ function Contests() {
         <div className="contests mt-5">
           {/* Add check whether user is admin */}
           <h2 className='mb-5' style={{ textAlign: 'center'}}> Contests </h2>
-          <button className='btn mb-3' type='button' onClick={() => navigate("/create")}> <FontAwesomeIcon icon={faCirclePlus} /> Create Contest </button>
+          { isAdmin && <button className='btn mb-3' type='button' onClick={() => navigate("/create")}> <FontAwesomeIcon icon={faCirclePlus} /> Create Contest </button> }
           <select className="form-select mb-3" onChange={(e) => setDisplayContests(e.target.value)}>
             <option selected value="current"> Current / Incoming </option>
             <option value="past"> Past Events </option>
           </select>
-          { displayContests == "current" ? slicedFutureContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} contest_id={arr['contest_id']} />)
-          : slicedPastContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} participants={arr['participants']} contest_id={arr['contest_id']} />)}
+          { displayContests == "current" ? slicedFutureContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} contest_id={arr['contest_id']} />)
+          : slicedPastContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} contest_id={arr['contest_id']} />)}
           <Pagination nPages={nPages} currentPage={currentPage} setCurrentPage={ setCurrentPage }/>
       </div>
     </div>
