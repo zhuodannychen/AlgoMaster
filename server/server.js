@@ -50,7 +50,7 @@ app.get('/users', (req, res) => {
 })
 
 app.get('/user/:username', (req, res) => {
-  client.query(`Select (user_id) FROM users WHERE username='${req.params.username}'`, (err, result) => {
+  client.query(`Select * FROM userIdByUsernameView WHERE username='${req.params.username}'`, (err, result) => {
     if(!err) {
       res.send(result.rows);
     }
