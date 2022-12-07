@@ -21,12 +21,22 @@ const monthText = {
 
 function Contest(props){
   const [username, setUsername] = useState("");
+  const [userContests, setUserContests] = useState([]);
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("authenticated")) || false;
+    const username = JSON.parse(localStorage.getItem("username"))
     if (loggedInUser) {
-        setUsername(JSON.parse(localStorage.getItem("username")))
+        setUsername(username)
     }
+
+    Axios.get("http://localhost:3001/user_contests", {
+        params: {
+            username: username
+        }
+    }).then((response) => {
+        setUserContests(response.data)
+    })
   }, []);
 
   const zeroPad = (num, places) => String(num).padStart(places, '0')
@@ -89,9 +99,29 @@ function Contest(props){
     const day = zeroPad(date.getUTCDate(), 2)
     const hours = zeroPad(date.getUTCHours(), 2)
     const minutes = zeroPad(date.getMinutes(), 2)
-    const curTS = year + "-" + month + "-" + day + "T" + hours + ":" + minutes
+    const seconds = zeroPad(date.getSeconds(), 2)
+    const curTS = year + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds
 
     return startTS <= curTS
+  }
+
+  const checkUserSignedUp = (contest_id) => {
+    // console.log(userContests)
+    // console.log(contest_id)
+    // console.log(userContests.includes(contest_id))
+    let low = 0
+    let high = userContests.length - 1
+    while (low <= high) {
+        let mid = low + Math.floor((high - low) / 2)
+        if (userContests[mid]['contest_id'] < contest_id) {
+            low = mid + 1
+        } else if (userContests[mid]['contest_id'] > contest_id) {
+            high = mid - 1
+        } else {
+            return true
+        }
+    }
+    return false
   }
 
   return (
@@ -102,10 +132,12 @@ function Contest(props){
           <div class="col-sm" style={{textAlign: 'right'}}> 
             <span className='contest_info'>  {parseDate(props.start_date)}, {parseTime(props.start_date)} </span>
             <span id="duration"> {getContestDuration(props.start_date, props.end_date)} hours </span>
-            {checkContestStarted(props.start_date) ? 
+            {/* {console.log(userContests)} */}
+            {!props.is_past && checkContestStarted(props.start_date) && checkUserSignedUp(props.contest_id) ? 
             <Link to={`/contests/${props.contest_id}`} className="btn btn-outline-success" style={{textColor: 'green'}} type='button'> Enter </Link>
-            :
-            <button className="btn btn-outline-success" onClick={() => addUserToContest(username, props.contest_id)} style={{textColor: 'green'}} type='button'> Sign Up </button>
+            : !props.is_past && checkContestStarted(props.start_date) ? <h1></h1>
+            : !props.is_past ? <button className="btn btn-outline-success" onClick={() => addUserToContest(username, props.contest_id)} style={{textColor: 'green'}} type='button'> Sign Up </button>
+            : <Link to={`/contests/${props.contest_id}`} className="btn btn-outline-success" style={{textColor: 'green'}} type='button'> Enter </Link>
             }
           </div>
         </div>
