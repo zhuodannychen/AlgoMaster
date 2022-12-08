@@ -174,9 +174,9 @@ app.post('/problems', async (req, res)=> {
 })
 
 app.delete('/problems/:id', (req, res)=> {
-    const insertQuery = `DELETE FROM problems WHERE problem_id=${req.params.id}`
+    const deleteQuery = `DELETE FROM problems WHERE problem_id=${req.params.id}`
 
-    client.query(insertQuery, (err, result)=>{
+    client.query(deleteQuery, (err, result)=>{
         if(!err){
             res.send('Deletion was successful')
         }
@@ -278,6 +278,38 @@ app.post('/contests', (req, res)=> {
     client.end;
 })
 
+app.delete("/contests/:contestid", (req, res) => {
+    const contestId = req.params.contestid
+    const deleteContest = `DELETE FROM contests WHERE contest_id=${contestId}`
+
+    client.query(deleteContest, (err, result) => {
+        if(!err){
+            console.log(result)
+            res.send("Success")
+        }
+        else { 
+            res.send([false, err.message])
+            console.log(err.message)
+        }
+    })
+})
+
+app.put('/editContest/:contestid', (req, res) => {
+    const contest = req.body
+    const updateQuery = `UPDATE contests SET contest_name='${contest.contestName}', start_date='${contest.startDate}', end_date='${contest.endDate}' WHERE contest_id=${req.params.contestid}`
+    client.query(updateQuery, (err, result) => {
+        if(!err){
+            res.send("Success")
+        }
+        else { 
+            res.send([false, err.message])
+            console.log(err.message)
+        }
+    })
+
+    client.end;
+})
+
 
 // ########## LOGIN ###########
 app.post('/login', async (req, res)=> {
@@ -338,11 +370,10 @@ app.post('/add_user_contest', (req, res)=> {
 
 app.get('/contestdetails/:id', (req, res)=> {
     const contestid = req.params.id
-    // const getContestName = `DELETE FROM user_contest WHERE user_id=${req.params.id}`
-    // await client.query(deleteUserContest)
-    const selectProblems = `SELECT problem_name, problem_desc, problem_url FROM contest_problem JOIN problems ON contest_problem.problem_id=problems.problem_id WHERE contest_id = ${contestid}`
-
+    const selectProblems = `SELECT problem_id, problem_name, problem_desc, problem_url FROM contest_problem JOIN problems ON contest_problem.problem_id=problems.problem_id WHERE contest_id = ${contestid}`
+    console.log(selectProblems)
     client.query(selectProblems, (err, result)=>{
+        console.log(result)
         if(err){
             res.send(err.message)
         } else {

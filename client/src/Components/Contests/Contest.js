@@ -1,6 +1,6 @@
 import Axios from 'axios'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import "../../App.css"
 
 
@@ -21,13 +21,16 @@ const monthText = {
 
 function Contest(props){
   const [username, setUsername] = useState("");
-  const [userContests, setUserContests] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(null)
+  const [userContests, setUserContests] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("authenticated")) || false;
     const username = JSON.parse(localStorage.getItem("username"))
     if (loggedInUser) {
         setUsername(username)
+        setIsAdmin(JSON.parse(localStorage.getItem('isAdmin')))
     }
 
     Axios.get("http://localhost:3001/user_contests", {
@@ -117,9 +120,6 @@ function Contest(props){
   }
 
   const checkUserSignedUp = (contest_id) => {
-    // console.log(userContests)
-    // console.log(contest_id)
-    // console.log(userContests.includes(contest_id))
     let low = 0
     let high = userContests.length - 1
     while (low <= high) {
@@ -135,6 +135,20 @@ function Contest(props){
     return false
   }
 
+  const checkContestEnded = (end_date) => {
+    const endTS = end_date
+    const date = new Date()
+
+    const year = zeroPad(date.getUTCFullYear(), 2)
+    const month = zeroPad(date.getUTCMonth()+1, 2)
+    const day = zeroPad(date.getUTCDate(), 2)
+    const hours = zeroPad(date.getUTCHours(), 2)
+    const minutes = zeroPad(date.getMinutes(), 2)
+    const curTS = year + "-" + month + "-" + day + "T" + hours + ":" + minutes
+
+    return endTS >= curTS
+  }
+
   return (
     <div class="card mb-3">
       <div class="card-body">
@@ -143,12 +157,14 @@ function Contest(props){
           <div class="col-sm" style={{textAlign: 'right'}}> 
             <span className='contest_info'>  <a href={timeZoneConversion(props.start_date)} target="blank">{parseDate(props.start_date)}, {parseTime(props.start_date)}</a> </span>
             <span id="duration"> {getContestDuration(props.start_date, props.end_date)} hours </span>
-            {/* {console.log(userContests)} */}
             {!props.is_past && checkContestStarted(props.start_date) && checkUserSignedUp(props.contest_id) ? 
             <Link to={`/contests/${props.contest_id}`} className="btn btn-outline-success" style={{textColor: 'green'}} type='button'> Enter </Link>
             : !props.is_past && checkContestStarted(props.start_date) ? <h1></h1>
             : !props.is_past ? <button className="btn btn-outline-success" onClick={() => addUserToContest(username, props.contest_id)} style={{textColor: 'green'}} type='button'> Sign Up </button>
             : <Link to={`/contests/${props.contest_id}`} className="btn btn-outline-success" style={{textColor: 'green'}} type='button'> Enter </Link>
+            }
+            {
+               (isAdmin && checkContestEnded(props.end_date)) && <button className="btn btn-outline-warning" style={{marginLeft: '15px'}} onClick={() => navigate(`/editContest/${props.contest_id}`)} type='button'> Edit </button> 
             }
           </div>
         </div>
