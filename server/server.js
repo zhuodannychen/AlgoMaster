@@ -370,7 +370,7 @@ app.post('/add_user_contest', (req, res)=> {
 
 app.get('/contestdetails/:id', (req, res)=> {
     const contestid = req.params.id
-    const selectProblems = `SELECT problem_id, problem_name, problem_desc, problem_url FROM contest_problem JOIN problems ON contest_problem.problem_id=problems.problem_id WHERE contest_id = ${contestid}`
+    const selectProblems = `SELECT problems.problem_id, problems.problem_name, problems.problem_desc, problems.problem_url FROM contest_problem JOIN problems ON contest_problem.problem_id=problems.problem_id WHERE contest_id = ${contestid}`
     console.log(selectProblems)
     client.query(selectProblems, (err, result)=>{
         console.log(result)
