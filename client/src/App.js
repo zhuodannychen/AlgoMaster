@@ -1,7 +1,7 @@
 import Login from './Components/Login'
 import Register from './Components/Register'
 import Contests from "./Components/Contests/ContestList"
-import CreateContest from './Components/Contests/CreateContest'
+import EditContest from './Components/Contests/EditContest'
 import Profile from './Components/Profile'
 import Comments from './Components/Contests/Comments'
 import ContestPage from './Components/Contests/ContestPage'
@@ -16,7 +16,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="contests" element={<Contests />} />
-        <Route path="create" element={ <CreateContest /> } />
+        <Route path="create" element={ <EditContest /> } />
+        <Route path="/editContest/:contestid" element={<EditContest />} />
         <Route path="profile" element={<Profile />} />
         <Route path="comments" element={<Comments /> } />
         <Route path="/contests/:contestid" element={<ContestPage />} />

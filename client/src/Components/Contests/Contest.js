@@ -1,6 +1,6 @@
 import Axios from 'axios'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import "../../App.css"
 
 
@@ -21,11 +21,14 @@ const monthText = {
 
 function Contest(props){
   const [username, setUsername] = useState("");
+  const [isAdmin, setIsAdmin] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("authenticated")) || false;
     if (loggedInUser) {
         setUsername(JSON.parse(localStorage.getItem("username")))
+        setIsAdmin(JSON.parse(localStorage.getItem('isAdmin')))
     }
   }, []);
 
@@ -94,6 +97,20 @@ function Contest(props){
     return startTS <= curTS
   }
 
+  const checkContestEnded = (end_date) => {
+    const endTS = end_date
+    const date = new Date()
+
+    const year = zeroPad(date.getUTCFullYear(), 2)
+    const month = zeroPad(date.getUTCMonth()+1, 2)
+    const day = zeroPad(date.getUTCDate(), 2)
+    const hours = zeroPad(date.getUTCHours(), 2)
+    const minutes = zeroPad(date.getMinutes(), 2)
+    const curTS = year + "-" + month + "-" + day + "T" + hours + ":" + minutes
+
+    return endTS >= curTS
+  }
+
   return (
     <div class="card mb-3">
       <div class="card-body">
@@ -102,10 +119,14 @@ function Contest(props){
           <div class="col-sm" style={{textAlign: 'right'}}> 
             <span className='contest_info'>  {parseDate(props.start_date)}, {parseTime(props.start_date)} </span>
             <span id="duration"> {getContestDuration(props.start_date, props.end_date)} hours </span>
-            {checkContestStarted(props.start_date) ? 
-            <Link to={`/contests/${props.contest_id}`} className="btn btn-outline-success" style={{textColor: 'green'}} type='button'> Enter </Link>
-            :
-            <button className="btn btn-outline-success" onClick={() => addUserToContest(username, props.contest_id)} style={{textColor: 'green'}} type='button'> Sign Up </button>
+            {
+              checkContestStarted(props.start_date) ? 
+                <Link to={`/contests/${props.contest_id}`} className="btn btn-outline-success" style={{textColor: 'green'}} type='button'> View </Link>
+                :
+                <button className="btn btn-outline-success" onClick={() => addUserToContest(username, props.contest_id)} style={{textColor: 'green'}} type='button'> Sign Up </button>
+            }
+            {
+               (isAdmin && checkContestEnded(props.end_date)) && <button className="btn btn-outline-warning" style={{marginLeft: '15px'}} onClick={() => navigate(`/editContest/${props.contest_id}`)} type='button'> Edit </button> 
             }
           </div>
         </div>
