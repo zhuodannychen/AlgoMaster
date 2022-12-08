@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from "@fortawesome/free-solid-svg-icons" 
+import { faUser, faTrash } from "@fortawesome/free-solid-svg-icons" 
 import Axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
@@ -11,6 +11,8 @@ function ContestPage(props){
   const [problems, setProblems] = useState([]);
   const [comments, setComments] = useState([]);
   const {contestid} = useParams();
+
+  const is_admin = JSON.parse(localStorage.getItem("isAdmin"));
 
   useEffect(() => {
     Axios.get('http://localhost:3001/contestdetails/'+contestid)
@@ -30,13 +32,13 @@ function ContestPage(props){
   const updateComments = () => {
     Axios.get('http://localhost:3001/comments/'+contestid)
     .then(response => {
-        console.log("Comments: ", response.data)
-        setComments(response.data)
-        setComment("")
+      console.log("Comments: ", response.data)
+      setComments(response.data)
+      setComment("")
     })
   }
 
-  const addContest = async () => {
+  const addComent = async () => {
     if (comment == "") {
       alert("Please enter a comment")
     } 
@@ -61,6 +63,15 @@ function ContestPage(props){
       })
     }
   }
+
+  const deleteComment = (comment_id) => {
+    if (window.confirm("Are you sure you want to delete this user?") == true){
+        const newComments = comments.filter(comment => comment['comment_id'] !== comment_id)
+        setComments(newComments)
+        Axios.delete("http://localhost:3001/comments/" + comment_id)
+     }
+  }
+
 
   const cardStyle = {
     marginBottom: "25px"
@@ -90,6 +101,15 @@ function ContestPage(props){
                 <FontAwesomeIcon icon={faUser} style={iconSpacingStyle}/>
                 <span class="card-title">{comment['username']}</span>
                 <p class="card-subtitle text-muted" style={paragraphMarginStyle}>{comment['comment_desc']}</p>
+                {is_admin ? 
+                (
+                  <FontAwesomeIcon className='pointerOnHover fa-lg' icon={faTrash} onClick={() => deleteComment(comment['comment_id'])}/>
+                )
+                :
+                (
+                  <></>
+                )
+              }
               </div>
             </div>
             
@@ -99,7 +119,7 @@ function ContestPage(props){
           <label for="Comment" class="form-label">Comment</label>
           <textarea class="form-control" id="Comment" rows="3" value={comment} onChange={e => {setComment(e.target.value)}}></textarea>
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <button class="btn btn-primary me-md-2" type="button" style={paragraphMarginStyle} onClick={addContest}>Submit</button>
+            <button class="btn btn-primary me-md-2" type="button" style={paragraphMarginStyle} onClick={addComent}>Submit</button>
           </div>
         </div>
     </div>
