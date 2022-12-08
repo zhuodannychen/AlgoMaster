@@ -71,7 +71,7 @@ function ContestPage(props){
   }
 
   const deleteComment = (comment_id) => {
-    if (window.confirm("Are you sure you want to delete this user?") == true){
+    if (window.confirm("Are you sure you want to delete this comment?") == true){
         const newComments = comments.filter(comment => comment['comment_id'] !== comment_id)
         setComments(newComments)
         Axios.delete("http://localhost:3001/comments/" + comment_id)

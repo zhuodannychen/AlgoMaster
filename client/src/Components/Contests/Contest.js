@@ -69,6 +69,17 @@ function Contest(props){
     return hours + ":" + minutes + " UTC"
   }
 
+  const timeZoneConversion = (timestamp) => {
+    const date = new Date(timestamp)
+
+    const month = date.getMonth()+1
+    const day = date.getDate()
+    const year = date.getFullYear()
+    const hours = date.getUTCHours()
+    const minutes = date.getMinutes()
+    return `https://www.timeanddate.com/worldclock/fixedtime.html?day=${day}&month=${month}&year=${year}&hour=${hours}&min=${minutes}&sec=0&tz=UTC`
+  }
+
   const getContestDuration = (startTime, endTime) => {
     const startDate = new Date(startTime)
     const endDate = new Date(endTime)
@@ -130,7 +141,7 @@ function Contest(props){
         <div class="row">
           <div class="col-sm contest-name mt-"> {props.name} </div>
           <div class="col-sm" style={{textAlign: 'right'}}> 
-            <span className='contest_info'>  {parseDate(props.start_date)}, {parseTime(props.start_date)} </span>
+            <span className='contest_info'>  <a href={timeZoneConversion(props.start_date)} target="blank">{parseDate(props.start_date)}, {parseTime(props.start_date)}</a> </span>
             <span id="duration"> {getContestDuration(props.start_date, props.end_date)} hours </span>
             {/* {console.log(userContests)} */}
             {!props.is_past && checkContestStarted(props.start_date) && checkUserSignedUp(props.contest_id) ? 
