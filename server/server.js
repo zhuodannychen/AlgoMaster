@@ -213,6 +213,21 @@ app.post('/comments', (req, res)=> {
   client.end;
 })
 
+app.delete('/comments/:comment_id', (req, res) => {
+  client.query(`delete from comments where comment_id=${req.params.comment_id};`, (err, result) => {
+    if(!err) 
+    {
+      res.send('Deletion was successful')
+    } 
+    else 
+    { 
+      console.log(err.message) 
+    }
+  })
+
+  client.end;
+})
+
 // ################ CONTESTS ###############
 app.get('/contests', (req, res) => {
     client.query(`SELECT * FROM contests ORDER BY start_date`, (err, result) => {
