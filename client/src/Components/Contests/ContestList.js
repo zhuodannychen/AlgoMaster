@@ -82,8 +82,8 @@ function Contests() {
             <option selected value="current"> Current / Incoming </option>
             <option value="past"> Past Events </option>
           </select>
-          { displayContests == "current" ? slicedFutureContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} contest_id={arr['contest_id']} />)
-          : slicedPastContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} contest_id={arr['contest_id']} />)}
+          { displayContests == "current" ? slicedFutureContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} contest_id={arr['contest_id']} is_past={false}/>)
+          : slicedPastContests.map((arr) => <Contest key={arr['contest_id']} name={arr['contest_name']} start_date={arr['start_date']} end_date={arr['end_date']} contest_id={arr['contest_id']} is_past={true}/>)}
           <Pagination nPages={nPages} currentPage={currentPage} setCurrentPage={ setCurrentPage }/>
       </div>
     </div>
