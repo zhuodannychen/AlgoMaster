@@ -40,6 +40,8 @@ const hashPassword = async (password, rounds) => {
 // app.use("/contests", contests)
 
 // ################## USERS ##############
+
+// get all users in the DB
 app.get('/users', (req, res) => {
     client.query(`SELECT * FROM users`, (err, result) => {
         if(!err){
@@ -49,6 +51,7 @@ app.get('/users', (req, res) => {
     client.end;
 })
 
+// get a user_id by username 
 app.get('/user/:username', (req, res) => {
   client.query(`Select * FROM userIdByUsernameView WHERE username='${req.params.username}'`, (err, result) => {
     if(!err) {
@@ -58,6 +61,7 @@ app.get('/user/:username', (req, res) => {
   client.end;
 })
 
+// Get a user by user_id
 app.get('/users/:id', (req, res)=>{
     client.query(`Select * FROM users WHERE user_id=${req.params.id}`, (err, result)=>{
         if(!err){
@@ -67,6 +71,7 @@ app.get('/users/:id', (req, res)=>{
     client.end;
 })
 
+// adds a new user to the DB
 app.post('/users', async (req, res)=> {
     const user = req.body;
     
@@ -95,6 +100,7 @@ app.post('/users', async (req, res)=> {
     client.end;
 })
 
+// update a user. Can set them to admin
 app.post('/users/:id', (req, res)=> {
     const user = req.body;
     const updateQuery = `UPDATE users SET isadmin = true WHERE user_id = ${req.params.id}`
@@ -111,6 +117,7 @@ app.post('/users/:id', (req, res)=> {
     client.end;
 })
 
+// delete a user. We have to delete from 3 entities: user_contest bridge, comments, and users
 app.delete('/users/:id', async (req, res)=> {
     const deleteUserContest= `DELETE FROM user_contest WHERE user_id=${req.params.id}`
     await client.query(deleteUserContest)
@@ -129,6 +136,8 @@ app.delete('/users/:id', async (req, res)=> {
 
 
 // ################ Problems ###############
+
+// get all problems in the DB
 app.get('/problems', (req, res) => {
     client.query(`SELECT * FROM problems`, (err, result) => {
         if(!err){
@@ -138,6 +147,7 @@ app.get('/problems', (req, res) => {
     client.end;
 })
 
+// get a problem by problem_id
 app.get('/problems/:id', (req, res)=>{
     client.query(`Select * FROM problems WHERE problem_id=${req.params.id}`, (err, result)=>{
         if(!err){
@@ -147,6 +157,8 @@ app.get('/problems/:id', (req, res)=>{
     client.end;
 })
 
+// add a problem to the DB
+// Since it's associated with a contest, we also need to add it to the contest_problem bridge table
 app.post('/problems', async (req, res)=> {
     const problem = req.body;
     const insertProblem = `INSERT INTO problems (problem_name, problem_desc, problem_url) 
@@ -173,6 +185,7 @@ app.post('/problems', async (req, res)=> {
     client.end;
 })
 
+// delete a problem by its ID
 app.delete('/problems/:id', (req, res)=> {
     const deleteQuery = `DELETE FROM problems WHERE problem_id=${req.params.id}`
 
@@ -312,6 +325,9 @@ app.put('/editContest/:contestid', (req, res) => {
 
 
 // ########## LOGIN ###########
+
+// logs a user in. We get the current inputed username, find the hashed password for that user in the DB,
+// and compare the hashed password to the hashed password in the DB. If they match, we log the user in
 app.post('/login', async (req, res)=> {
     const username = req.body.username;
     const password = req.body.password;
@@ -322,7 +338,6 @@ app.post('/login', async (req, res)=> {
             res.send(err.message)
         }
 
-        console.log(result)
         if (result.rowCount > 0) {
             bcrypt.compare(password, result.rows[0].password, (err, isMatch) => {
                 if (err) {
@@ -333,7 +348,6 @@ app.post('/login', async (req, res)=> {
                     res.send([false, 'Wrong username or password.'])
                 }
             })
-            // res.send([true, 'Login success!', result.rows[0].username, result.rows[0].isadmin])
         }
         else{ 
             res.send([false, 'Wrong username or password.'])
